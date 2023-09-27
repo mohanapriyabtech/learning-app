@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
+
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -69,7 +70,7 @@ export default function Login() {
     
         if (response.status === 200) {
             localStorage.setItem('session_token', response.data.session_token);
-            navigate('/project')
+            navigate('/dashboard')
             
             //history.push('/project'); 
         } else {
@@ -102,7 +103,7 @@ export default function Login() {
         anchorOrigin={{ vertical, horizontal }}
       >
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          Failed! Enter correct username and password.
+          Failed! Enter correct email and password.
         </Alert>
       </Snackbar>
       <div
@@ -132,8 +133,8 @@ export default function Login() {
               <Box
                 style={{
                   backgroundSize: "cover",
-                  height: "63vh",
-                 // minHeight: "500px",
+                  height: "70vh",
+                  minHeight: "400px",
                   backgroundColor: "#3b33d5",
                 }}
               >
