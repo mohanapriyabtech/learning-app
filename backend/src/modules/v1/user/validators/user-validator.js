@@ -38,17 +38,17 @@ class UserValidator {
                     .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
                     .required()
                     .error(new Error("Enter a valid email")),
-                phone_number: Joi.string()
-                    .pattern(/^\+?[0-9\s]+$/)
-                    .min(4)
-                    .max(15)
-                    .required()
-                    .messages({
-                        'string.pattern.base': 'Phone number must only contain digits',
-                        "string.min": "Phone number must be minimum 4 digit number",
-                        "string.max": "Phone number must be maximum 15 digit number",
-                        "any.required": "Phone number is required"
-                    })
+                // phone_number: Joi.string()
+                //     .pattern(/^\+?[0-9\s]+$/)
+                //     .min(4)
+                //     .max(15)
+                //     .required()
+                //     .messages({
+                //         'string.pattern.base': 'Phone number must only contain digits',
+                //         "string.min": "Phone number must be minimum 4 digit number",
+                //         "string.max": "Phone number must be maximum 15 digit number",
+                //         "any.required": "Phone number is required"
+                //     })
             }),
         };
     }

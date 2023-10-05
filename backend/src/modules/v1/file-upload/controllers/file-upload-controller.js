@@ -10,6 +10,7 @@ class FileUpload {
      */
     async create(req, res) {
         try {
+
             const { files, body: { service = '' } } = req;
             if (!files || Object.keys(files).length === 0) {
                 return responseHandler.errorResponse(res, {}, 'No files were uploaded.', 400);
@@ -28,7 +29,7 @@ class FileUpload {
 
                 const name = `${file.md5}${Date.now()}.${file.name.split(".").pop()}`;
                 const imageFolderName = new Date().valueOf();
-                const uploadPath = `/var/www/html/${process.env.UPLOADS_PATH}/${service}/${imageFolderName}/${name}`;
+                const uploadPath = `./var/www/html/${process.env.UPLOADS_PATH}/${service}/${imageFolderName}/${name}`;
 
                 await file.mv(uploadPath);
 
