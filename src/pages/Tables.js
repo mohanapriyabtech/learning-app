@@ -55,10 +55,40 @@ function Tables() {
   const onPageChange = (page) => {
     setPage(page);
   };
+
   const handleCreateProjectClick = () => {
     history.push('/app/forms');
   };
 
+
+  const handleDeleteClick = async (projectId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+  
+      await axios.delete(`http://localhost:3000/api/v1/user/delete-project/${projectId}`, { headers });
+  
+      setDataTable(dataTable.filter(project => project.id !== projectId));
+      setTotalResults(totalResults - 1);
+      fetchData()
+
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
+
+  
+  const handleEditClick = async (project) => {
+    
+    localStorage.setItem("projectName",project.name);
+    localStorage.setItem("projectDescription",project.description);
+    localStorage.setItem("fileUrl",project.file_url);
+
+    history.push('/app/edit-project')
+  };
+  
   
   
 
@@ -112,10 +142,10 @@ function Tables() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center space-x-4">
-                    <Button layout="link" size="icon" aria-label="Edit" > 
+                  <Button layout="link" size="icon" aria-label="Edit" onClick={() => handleEditClick(project)}> 
                       <EditIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
-                    <Button layout="link" size="icon" aria-label="Delete">
+                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => handleDeleteClick(project._id)}>
                       <TrashIcon className="w-5 h-5" aria-hidden="true" />
                     </Button>
                   </div>

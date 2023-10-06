@@ -1,46 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import PageTitle from '../components/Typography/PageTitle';
 import { Input, Label, Textarea, Button } from '@windmill/react-ui';
-import axios from 'axios'; 
+import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  description: Yup.string().required('Description is required'),
   file: Yup.mixed().required('File is required'),
 });
 
-function Forms() {
+function EditProject() {
   const history = useHistory();
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    file: null,
-  });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+  const initialValues = {
+    name: localStorage.getItem('projectName') || '',
+    description: localStorage.getItem('projectDescription') || '', 
+    file:  localStorage.getItem('fileUrl') || '', 
   };
 
+  useEffect(() => {
+    // You can also use this useEffect to fetch and set the file data if needed.
+    // Example: Fetch file data from an API and update formik.values.file
+  }, []);
+
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    formik.setFieldValue('file', file);
+    formik.setFieldValue('file', e.target.files[0]);
   };
 
   const handleSubmit = async (values) => {
     try {
-      
       const form_data = new FormData();
-      form_data.append('name', values.name);
-      form_data.append('description', values.description);
-      // form_data.append('file', formData.file); 
-  
+
+      form_data.append('file', values.file);
+
       const file_data = new FormData();
       file_data.append('media', formik.values.file);
       file_data.append('service', 'users');
@@ -54,28 +47,13 @@ function Forms() {
       console.log('File upload API response:', fileResponse.data.data);
   
       form_data.append('file_url', fileResponse.data.data[0].name);
-  
-      const token = localStorage.getItem("token");
-      const response = await axios.post('http://localhost:3000/api/v1/user/create-project', form_data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        },
-      });
-  
-      console.log('Form submission API response:', response.data.data);
-
-      if (response.status === 200) {
-        formik.resetForm();
-        history.push('/app/projects');
-      }
     } catch (error) {
       console.error('API error:', error);
     }
   };
 
   const formik = useFormik({
-    initialValues: formData,
+    initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
@@ -86,6 +64,7 @@ function Forms() {
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <form onSubmit={formik.handleSubmit}>
+          {/* Name */}
           <div className="mb-4">
             <Label>
               <span>Name</span>
@@ -95,6 +74,7 @@ function Forms() {
                 name="name"
                 value={formik.values.name}
                 onChange={formik.handleChange}
+                disabled
               />
             </Label>
             {formik.touched.name && formik.errors.name ? (
@@ -102,6 +82,7 @@ function Forms() {
             ) : null}
           </div>
 
+          {/* Description */}
           <div className="mb-4">
             <Label>
               <span>Description</span>
@@ -112,6 +93,7 @@ function Forms() {
                 name="description"
                 value={formik.values.description}
                 onChange={formik.handleChange}
+                disabled
               />
             </Label>
             {formik.touched.description && formik.errors.description ? (
@@ -119,21 +101,18 @@ function Forms() {
             ) : null}
           </div>
 
+          {/* File Upload */}
           <div className="mb-4">
             <Label>
               <span className="text-gray-700 dark:text-gray-400">Document Upload</span>
               <input
                 type="file"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
-                accept=".pdf, .doc, .docx"
+                accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
                 name="file"
-                // onChange={(e) => {
-                //   console.log(e, "e");
-                //   formik.setFieldValue('file', e.currentTarget.files[0]);
-                //   console.log(formik.values.file, "formik.values.file");
-                // }}  
+                value={formik.values.fileUrl}
                 onChange={handleFileChange}
-
+                disabled={formik.isSubmitting}
               />
             </Label>
             {formik.touched.file && formik.errors.file ? (
@@ -141,6 +120,7 @@ function Forms() {
             ) : null}
           </div>
 
+          {/* Submit Button */}
           <div className="mt-6">
             <Button
               type="submit"
@@ -156,4 +136,4 @@ function Forms() {
   );
 }
 
-export default Forms;
+export default EditProject;

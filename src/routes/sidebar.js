@@ -19,7 +19,7 @@ const routes = [
   {
     path: '/app/edit-project',
     icon: 'FormsIcon',
-    name: 'Forms',
+    name: 'EditProject',
   },
   // {
   //   path: '/app/cards',

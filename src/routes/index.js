@@ -10,6 +10,7 @@ const Modals = lazy(() => import('../pages/Modals'))
 const Tables = lazy(() => import('../pages/Tables'))
 const Page404 = lazy(() => import('../pages/404'))
 const Blank = lazy(() => import('../pages/Blank'))
+const EditProject = lazy(()=> import('../pages/EditProject'))
 
 /**
  * ⚠ These are internal routes!
@@ -32,7 +33,7 @@ const routes = [
   },
   {
     path: '/edit-project',
-    component: Forms,
+    component: EditProject,
   },
   {
     path: '/cards',
