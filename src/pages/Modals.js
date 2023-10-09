@@ -1,63 +1,45 @@
-import React, { useState } from 'react'
+import React from 'react';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui';
 
-import PageTitle from '../components/Typography/PageTitle'
-import CTA from '../components/CTA'
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from '@windmill/react-ui'
-
-function Modals() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  function openModal() {
-    setIsModalOpen(true)
-  }
-
-  function closeModal() {
-    setIsModalOpen(false)
-  }
-
+function Modals({ isOpen, onClose, message }) {
+  console.log("======================================")
   return (
     <>
-      <PageTitle>Modals</PageTitle>
-      <CTA />
-
-      <div>
-        <Button onClick={openModal}>Open modal</Button>
-      </div>
-
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <ModalHeader>Modal header</ModalHeader>
-        <ModalBody>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum et eligendi repudiandae
-          voluptatem tempore!
-        </ModalBody>
-        <ModalFooter>
-          {/* I don't like this approach. Consider passing a prop to ModalFooter
-           * that if present, would duplicate the buttons in a way similar to this.
-           * Or, maybe find some way to pass something like size="large md:regular"
-           * to Button
-           */}
-          <div className="hidden sm:block">
-            <Button layout="outline" onClick={closeModal}>
-              Cancel
-            </Button>
-          </div>
-          <div className="hidden sm:block">
+      {isOpen && (
+        <Modal>
+          <ModalHeader>
+            Modal header
+            <button
+              onClick={onClose}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-600 focus:outline-none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </ModalHeader>
+          <ModalBody>
+            {message || 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum et eligendi repudiandae voluptatem tempore!'}
+          </ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>Cancel</Button>
             <Button>Accept</Button>
-          </div>
-          <div className="block w-full sm:hidden">
-            <Button block size="large" layout="outline" onClick={closeModal}>
-              Cancel
-            </Button>
-          </div>
-          <div className="block w-full sm:hidden">
-            <Button block size="large">
-              Accept
-            </Button>
-          </div>
-        </ModalFooter>
-      </Modal>
+          </ModalFooter>
+        </Modal>
+      )}
     </>
-  )
+  );
 }
 
-export default Modals
+export default Modals;

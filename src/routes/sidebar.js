@@ -17,7 +17,7 @@ const routes = [
     name: 'Forms',
   },
   {
-    path: '/app/edit-project',
+    path: '/app/edit-project:id',
     icon: 'FormsIcon',
     name: 'EditProject',
   },

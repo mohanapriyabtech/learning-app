@@ -1,28 +1,37 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect , useRef  } from 'react';
 import { useHistory } from 'react-router-dom';
 import PageTitle from '../components/Typography/PageTitle';
 import { Input, Label, Textarea, Button } from '@windmill/react-ui';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import Modals from "../pages/Modals"
+
 
 const validationSchema = Yup.object().shape({
   file: Yup.mixed().required('File is required'),
 });
 
+
+
 function EditProject() {
   const history = useHistory();
+  const [showSuccessModal, setShowSuccessModal] = useState(false); 
+  const [modalMessage, setModalMessage] = useState(''); 
+
+  const closeSuccessModal = () => {
+    setShowSuccessModal(false);
+    history.push('/app/projects');
+  };
+
+  let {id}  = useParams();
 
   const initialValues = {
     name: localStorage.getItem('projectName') || '',
     description: localStorage.getItem('projectDescription') || '', 
-    file:  localStorage.getItem('fileUrl') || '', 
+    file:null, 
   };
-
-  useEffect(() => {
-    // You can also use this useEffect to fetch and set the file data if needed.
-    // Example: Fetch file data from an API and update formik.values.file
-  }, []);
 
   const handleFileChange = (e) => {
     formik.setFieldValue('file', e.target.files[0]);
@@ -30,8 +39,8 @@ function EditProject() {
 
   const handleSubmit = async (values) => {
     try {
+      console.log(id);
       const form_data = new FormData();
-
       form_data.append('file', values.file);
 
       const file_data = new FormData();
@@ -47,16 +56,39 @@ function EditProject() {
       console.log('File upload API response:', fileResponse.data.data);
   
       form_data.append('file_url', fileResponse.data.data[0].name);
+
+      const token = localStorage.getItem("token");
+      const response = await axios.patch(`http://localhost:3000/api/v1/user/update-project/${id}`, form_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        },
+      });
+  
+      console.log('Form submission API response:', response.data.data);
+
+      if (response.status === 200) {
+  
+          formik.resetForm();
+          setModalMessage('Project file updated successfully!'); 
+          setShowSuccessModal(true); 
+        
+      }
     } catch (error) {
       console.error('API error:', error);
     }
+   
   };
 
+  const fileName = localStorage.getItem('fileUrl')
+
+  
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
+  
 
   return (
     <>
@@ -72,14 +104,11 @@ function EditProject() {
                 className="mt-1"
                 placeholder="Jane Doe"
                 name="name"
-                value={formik.values.name}
-                onChange={formik.handleChange}
+                value={initialValues.name}
                 disabled
               />
             </Label>
-            {formik.touched.name && formik.errors.name ? (
-              <div className="text-red-600">{formik.errors.name}</div>
-            ) : null}
+           
           </div>
 
           {/* Description */}
@@ -91,34 +120,47 @@ function EditProject() {
                 rows="3"
                 placeholder="Enter a description."
                 name="description"
-                value={formik.values.description}
-                onChange={formik.handleChange}
+                value={initialValues.description}
                 disabled
               />
             </Label>
-            {formik.touched.description && formik.errors.description ? (
-              <div className="text-red-600">{formik.errors.description}</div>
-            ) : null}
+          
           </div>
 
           {/* File Upload */}
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <Label>
               <span className="text-gray-700 dark:text-gray-400">Document Upload</span>
+              {/* Hidden file input */}
               <input
                 type="file"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                className="hidden"
                 accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
                 name="file"
-                value={formik.values.fileUrl}
                 onChange={handleFileChange}
-                disabled={formik.isSubmitting}
+                // disabled={formik.isSubmitting}
+                // value={formik.values.file}
+                // ref={fileInputRef}
               />
+              {/* Custom design */}
+              <div
+              className="mt-1 w-full rounded-md shadow-sm focus-within:border-purple-400 focus-within:ring focus-within:ring-purple-200 focus-within:ring-opacity-50 cursor-pointer"
+              // onClick={() => fileInputRef.current.click()}
+            >
+              {/* Custom label or icon */}
+              <div className="py-2 px-4 text-gray-500">
+                <span className="text-purple-600 border border-gray-300 rounded-md pl-2 pr-4">Choose file</span>
+                <span> </span>
+                {formik.values.file ? formik.values.file.name : fileName}
+              
+              </div>
+            </div>
             </Label>
             {formik.touched.file && formik.errors.file ? (
               <div className="text-red-600">{formik.errors.file}</div>
             ) : null}
           </div>
+
 
           {/* Submit Button */}
           <div className="mt-6">
@@ -130,6 +172,7 @@ function EditProject() {
               Submit
             </Button>
           </div>
+          <Modals isOpen={showSuccessModal} onClose={closeSuccessModal} message={modalMessage} />
         </form>
       </div>
     </>

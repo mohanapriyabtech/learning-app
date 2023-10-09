@@ -18,10 +18,10 @@ class UpdateCityController {
     async update(req, res) {
 
         try {
-            const name = req.body.name;
-            const description = req.body.description
 
-            const result = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec();
+            const file_url = req.body.file_url
+            console.log(req.body.file_url,"")
+            const result = await Project.findByIdAndUpdate(req.params.id, {file_url}, { new: true }).exec();
 
             if (result) {
                 //adminLogController.store(req.headers.authorization, result.id, 'Project', 'Project details updated', result);

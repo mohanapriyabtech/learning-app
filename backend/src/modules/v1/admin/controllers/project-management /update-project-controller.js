@@ -21,8 +21,7 @@ class UpdateProjectController {
     async update(req, res) {
 
         try {
-            const name = req.body.name;
-            const description = req.body.description
+            const file = req.body.file;
 
             const result = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec();
 

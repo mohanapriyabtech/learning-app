@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import PageTitle from '../components/Typography/PageTitle'
 import SectionTitle from '../components/Typography/SectionTitle'
 import CTA from '../components/CTA'
+import EditProject from './EditProject';
 import {
   Table,
   TableHeader,
@@ -85,8 +86,8 @@ function Tables() {
     localStorage.setItem("projectName",project.name);
     localStorage.setItem("projectDescription",project.description);
     localStorage.setItem("fileUrl",project.file_url);
-
-    history.push('/app/edit-project')
+  
+    history.push(`/app/edit-project/${project._id}`)
   };
   
   
@@ -143,11 +144,12 @@ function Tables() {
                 <TableCell>
                   <div className="flex items-center space-x-4">
                   <Button layout="link" size="icon" aria-label="Edit" onClick={() => handleEditClick(project)}> 
-                      <EditIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
-                    <Button layout="link" size="icon" aria-label="Delete" onClick={() => handleDeleteClick(project._id)}>
-                      <TrashIcon className="w-5 h-5" aria-hidden="true" />
-                    </Button>
+                    {/* <EditProject project={project._id} /> */}
+                    <EditIcon className="w-5 h-5" aria-hidden="true" />
+                  </Button>
+                  <Button layout="link" size="icon" aria-label="Delete" onClick={() => handleDeleteClick(project._id)}>
+                    <TrashIcon className="w-5 h-5" aria-hidden="true" />
+                  </Button>
                   </div>
                 </TableCell>
               </TableRow>
