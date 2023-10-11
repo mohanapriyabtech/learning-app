@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link , useHistory } from 'react-router-dom';
-import dotenv from 'dotenv';
-import ImageLight from '../assets/img/login-office.jpeg'
-import ImageDark from '../assets/img/login-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
+import dotenv from 'dotenv';//.././assets/img/login-office.jpeg
+import ImageLight from './../../assets/img/login-office.jpeg'
+import ImageDark from './../../assets/img/login-office-dark.jpeg'
+import { GithubIcon, TwitterIcon } from '../../icons'
 import { Label, Input, Button } from '@windmill/react-ui'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -44,8 +44,8 @@ function Login() {
 
   const handleSubmit = async (values) => {
     try {
-      console.log("apiUrl",apiUrl)
-      const response = await axios.post(`${apiUrl}/api/v1/user/login`, values);
+        
+      const response = await axios.post(`${apiUrl}/api/v1/admin/login`, values);
 
       if (response.status === 200) {
         localStorage.setItem('token', response.data.data.session.session_token);
@@ -53,7 +53,7 @@ function Login() {
         setError(null);
        
         formik.resetForm();
-        history.push('/app');
+        history.push('/app/admin');
       }
     } catch (error) {
       if (error.response) {

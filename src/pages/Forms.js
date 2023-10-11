@@ -5,6 +5,8 @@ import { Input, Label, Textarea, Button } from '@windmill/react-ui';
 import axios from 'axios'; 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -13,6 +15,7 @@ const validationSchema = Yup.object().shape({
 });
 
 function Forms() {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const history = useHistory();
   const [formData, setFormData] = useState({
     name: '',
@@ -45,7 +48,7 @@ function Forms() {
       file_data.append('media', formik.values.file);
       file_data.append('service', 'users');
   
-      const fileResponse = await axios.post('http://localhost:3000/api/v1/file-upload/upload', file_data, {
+      const fileResponse = await axios.post(`${apiUrl}/api/v1/file-upload/upload`, file_data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -56,7 +59,7 @@ function Forms() {
       form_data.append('file_url', fileResponse.data.data[0].name);
   
       const token = localStorage.getItem("token");
-      const response = await axios.post('http://localhost:3000/api/v1/user/create-project', form_data, {
+      const response = await axios.post(`${apiUrl}/api/v1/user/create-project`, form_data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`

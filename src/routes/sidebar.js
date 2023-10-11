@@ -11,16 +11,16 @@ const routes = [
     icon: 'HomeIcon', // the component being exported from icons/index.js
     name: 'Dashboard', // name that appear in Sidebar
   },
-  {
-    path: '/app/forms',
-    icon: 'FormsIcon',
-    name: 'Forms',
-  },
-  {
-    path: '/app/edit-project:id',
-    icon: 'FormsIcon',
-    name: 'EditProject',
-  },
+  // {
+  //   path: '/app/forms',
+  //   icon: 'FormsIcon',
+  //   name: 'Forms',
+  // },
+  // {
+  //   path: '/app/edit-project:id',
+  //   icon: 'FormsIcon',
+  //   name: 'EditProject',
+  // },
   // {
   //   path: '/app/cards',
   //   icon: 'CardsIcon',
@@ -36,11 +36,11 @@ const routes = [
   //   icon: 'ButtonsIcon',
   //   name: 'Buttons',
   // },
-  {
-    path: '/app/modals',
-    icon: 'ModalsIcon',
-    name: 'Modals',
-  },
+  // {
+  //   path: '/app/modals',
+  //   icon: 'ModalsIcon',
+  //   name: 'Modals',
+  // },
   {
     path: '/app/projects',
     icon: 'TablesIcon',

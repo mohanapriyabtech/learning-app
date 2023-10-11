@@ -23,7 +23,7 @@ const uploadPage = lazy(()=> import('../pages/uploadPage'))
  * If you're looking for the links rendered in the SidebarContent, go to
  * `routes/sidebar.js`
  */
-const routes = [
+const adminRoutes = [
   {
     path: '/dashboard', // the url
     component: Dashboard, // view rendered
@@ -57,7 +57,7 @@ const routes = [
     component: Modals,
   },
   {
-    path: '/Projects',
+    path: '/Courses',
     component: Tables,
   },
   {
@@ -70,4 +70,4 @@ const routes = [
   },
 ]
 
-export default routes
+export default adminRoutes
