@@ -10,11 +10,7 @@ import paramsValidator from '../../admin/validators/params-validator';
 import userValidator from '../validators/user-validator';
 import resetPassword from '../controllers/user-management/reset-password';
 import logout from '../controllers/user-management/logout';
-import createProjectController from '../controllers/project-management /create-project-controller';
-import getProjectById from '../../admin/controllers/project-management /get-project-by-id';
-import updateProjectController from '../controllers/project-management /update-project-controller';
-import deleteProjectById from '../controllers/project-management /delete-project-by-id';
-import listProjects from '../controllers/project-management /list-projects';
+
 import userAuthentication from '../authentication/user-authentication';
 
 
@@ -36,13 +32,7 @@ userRouter.get('/details/:id', paramsValidator.validate, userAuthentication.chec
 userRouter.patch('/reset-password/:id', paramsValidator.validate,userAuthentication.check, resetPassword.update);
 userRouter.delete('/logout', userAuthentication.check,logout.delete);
 
-// project management
 
-userRouter.post('/create-project', userAuthentication.check,createProjectController.create);
-userRouter.get('/list-project', userAuthentication.check,listProjects.list);  
-userRouter.get('/get-project/:id',userAuthentication.check, getProjectById.get);
-userRouter.patch('/update-project/:id', userAuthentication.check,updateProjectController.update);
-userRouter.delete('/delete-project/:id',userAuthentication.check, deleteProjectById.delete);
 
 
 

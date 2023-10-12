@@ -45,7 +45,7 @@ function Login() {
   const handleSubmit = async (values) => {
     try {
         
-      const response = await axios.post(`${apiUrl}/api/v1/admin/login`, values);
+      const response = await axios.post(`${apiUrl}/api/v1/mentor/login`, values);
 
       if (response.status === 200) {
         localStorage.setItem('token', response.data.data.session.session_token);
@@ -53,7 +53,7 @@ function Login() {
         setError(null);
        
         formik.resetForm();
-        history.push('/app/admin');
+        history.push('/app/mentor');
       }
     } catch (error) {
       if (error.response) {

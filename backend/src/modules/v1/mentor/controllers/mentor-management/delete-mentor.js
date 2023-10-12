@@ -1,5 +1,5 @@
 import { responseHandler } from "../../../../../utils/response-handler";
-import { Mentor} from "../../../mentor/models/mentor-model";
+import { Mentor } from "../../models/mentor-model";
 
 
 

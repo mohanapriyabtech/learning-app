@@ -1,5 +1,5 @@
 import { responseHandler } from "../../../../../utils/response-handler";
-import { Project } from "../../../user/models/project-model";
+import { User } from "../../../user/models/user-model";
 
 
 class ListUserController {
@@ -8,19 +8,19 @@ class ListUserController {
     }
 
     /**
-      * @description   api to get project details
-      * @param {*} req /api/v1/user/get-project/:id
+      * @description   api to get user details
+      * @param {*} req /api/v1/user/get-user/:id
       * @param {*} res 
       */
 
     async list(req, res) {
 
         try {
-            const result = await Project.find()
+            const result = await User.find()
             if (result.length != 0) {
-                return responseHandler.successResponse(res, result, "project list retrived successfull", 200);
+                return responseHandler.successResponse(res, result, "User list retrived successfull", 200);
             } else {
-                return responseHandler.errorResponse(res, result, "No projects found", 200);
+                return responseHandler.errorResponse(res, result, "No users found", 200);
             }
         }
         catch (err) {

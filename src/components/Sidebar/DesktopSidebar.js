@@ -1,6 +1,6 @@
 import React from 'react'
 
-import SidebarContent from './Admin/AdminSidebarContent'
+import SidebarContent from './SidebarContent'
 
 function DesktopSidebar(props) {
   return (

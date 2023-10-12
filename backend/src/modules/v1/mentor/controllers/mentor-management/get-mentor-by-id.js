@@ -1,8 +1,9 @@
 import { responseHandler } from "../../../../../utils/response-handler";
-import { Project } from "../../../user/models/project-model";
+import { Mentor} from "../../models/mentor-model";
 
 
-class GetCityController {
+
+class GetMentorController {
 
     constructor() {
     }
@@ -16,11 +17,11 @@ class GetCityController {
     async get(req, res) {
 
         try {
-            const result = await Project.findById(req.params.id).exec();
+            const result = await Mentor.findById(req.params.id).exec();
             if (result) {
-                return responseHandler.successResponse(res, result, "Project details retrieved successfully");
+                return responseHandler.successResponse(res, result, "Mentor details retrieved successfully");
             } else {
-                return responseHandler.errorResponse(res, {}, "Project not found", 400);
+                return responseHandler.errorResponse(res, {}, "Mentor not found", 400);
             }
             
         } catch (err) {
@@ -32,4 +33,4 @@ class GetCityController {
 }
 
 
-export default new GetCityController();
+export default new GetMentorController();

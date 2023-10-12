@@ -8,6 +8,7 @@ const Charts = lazy(() => import('../pages/Charts'))
 const Buttons = lazy(() => import('../pages/Buttons'))
 const Modals = lazy(() => import('../pages/Modals'))
 const Tables = lazy(() => import('../pages/Tables'))
+const Courses = lazy(() => import('../pages/Admin/AdminCourses'))
 const Page404 = lazy(() => import('../pages/404'))
 const Blank = lazy(() => import('../pages/Blank'))
 const EditProject = lazy(()=> import('../pages/EditProject'))
@@ -55,6 +56,10 @@ const routes = [
   {
     path: '/modals',
     component: Modals,
+  },
+  {
+    path:'/courses',
+    component : Courses
   },
   {
     path: '/Projects',

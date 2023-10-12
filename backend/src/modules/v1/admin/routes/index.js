@@ -16,9 +16,8 @@ import blockUser from '../controllers/user-management/block-user';
 //import acceptKycDetails from '../controllers/user-management/accept-kyc-details';
 import rejectKycDetails from '../controllers/user-management/reject-kyc-details';
 import logout from '../../user/controllers/user-management/logout';
-import listProjects from '../controllers/project-management /list-projects';
-import getProjectById from '../controllers/project-management /get-project-by-id';
-import deleteProjectById from '../controllers/project-management /delete-project-by-id';
+
+
 import createMentor from '../controllers/mentor-management/create-mentor';
 import deleteMentor from '../controllers/mentor-management/delete-mentor';
 import listMentor from '../controllers/mentor-management/list-mentor';
@@ -58,10 +57,7 @@ adminRouter.patch('/unblock-user/:id', paramsValidator.validate, unblockUser.upd
 //adminRouter.patch('/accept-user-kyc/:id', paramsValidator.validate, acceptKycDetails.update);
 //adminRouter.patch('/reject-user-kyc/:id', paramsValidator.validate, rejectKycDetails.update);
 
-// // project-management
-// adminRouter.get('/list-project', listProjects.list);
-// adminRouter.get('/get-user/:id', paramsValidator.validate, getProjectById.get)
-// adminRouter.delete('/delete-user/:id', paramsValidator.validate, deleteProjectById.delete);
+
 
 
 //mentor management

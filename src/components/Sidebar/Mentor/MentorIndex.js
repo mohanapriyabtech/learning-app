@@ -1,11 +1,11 @@
 import React from 'react'
-import AdminDesktopSidebar from '../Admin/AdminDesktopSidebar'
+import MentorDesktopSidebar from '../Mentor/MentorDesktopSidebar'
 import MobileSidebar from '../MobileSidebar'
 
 function Sidebar() {
   return (
     <>
-      <AdminDesktopSidebar />
+      <MentorDesktopSidebar />
       <MobileSidebar />
     </>
   )

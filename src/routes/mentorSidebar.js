@@ -7,7 +7,7 @@
  */
 const routes = [
     {
-      path: '/app/admin/dashboard', // the url
+      path: '/app/mentor/dashboard', // the url
       icon: 'HomeIcon', // the component being exported from icons/index.js
       name: 'Dashboard', // name that appear in Sidebar
     },
@@ -22,7 +22,7 @@ const routes = [
     //   name: 'EditProject',
     // },
     {
-      path: '/app/admin/cards',
+      path: '/app/mentor/cards',
       icon: 'CardsIcon',
       name: 'Cards',
     },
@@ -37,12 +37,12 @@ const routes = [
     //   name: 'Buttons',
     // },
     {
-      path: '/app/admin/modals',
+      path: '/app/mentor/modals',
       icon: 'ModalsIcon',
       name: 'Modals',
     },
     {
-      path: '/app/admin/courses',
+      path: '/app/mentor/courses',
       icon: 'TablesIcon',
       name: 'Courses',
     },

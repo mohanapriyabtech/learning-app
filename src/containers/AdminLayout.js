@@ -4,13 +4,13 @@ import adminRoutes from '../routes/adminIndex'
 
 import Sidebar from '../components/Sidebar/Admin/adminIndex'
 import Header from '../components/Header'
-import Main from '../containers/Main'
+import Main from './Main'
 import ThemedSuspense from '../components/ThemedSuspense'
 import { SidebarContext } from '../context/SidebarContext'
 
 const Page404 = lazy(() => import('../pages/404'))
 
-function Layout() {
+function AdminLayout() {
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext)
   let location = useLocation()
 
@@ -34,12 +34,12 @@ function Layout() {
                   <Route
                     key={i}
                     exact={true}
-                    path={`/app${route.path}`}
+                    path={`/app/admin${route.path}`}
                     render={(props) => <route.component {...props} />}
                   />
                 ) : null
               })}
-              <Redirect exact from="/app" to="/app/dashboard" />
+              <Redirect exact from="/app/admin" to="/app/admin/dashboard" />
               <Route component={Page404} />
             </Switch>
           </Suspense>
@@ -49,4 +49,4 @@ function Layout() {
   )
 }
 
-export default Layout
+export default AdminLayout
