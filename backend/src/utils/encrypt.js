@@ -24,7 +24,6 @@ export function decrypt(text, encryptionKey = ENCRYPTION_KEY) {
     let encryptedText = Buffer.from(textParts.join(':'), 'hex');
     let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey), iv);
     let decrypted = decipher.update(encryptedText);
-
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
   }

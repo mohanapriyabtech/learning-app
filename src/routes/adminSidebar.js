@@ -21,58 +21,18 @@ const routes = [
     //   icon: 'FormsIcon',
     //   name: 'EditProject',
     // },
-    {
-      path: '/app/admin/cards',
-      icon: 'CardsIcon',
-      name: 'Cards',
-    },
-    // {
-    //   path: '/app/charts',
-    //   icon: 'ChartsIcon',
-    //   name: 'Charts',
-    // },
-    // {
-    //   path: '/app/buttons',
-    //   icon: 'ButtonsIcon',
-    //   name: 'Buttons',
-    // },
-    {
-      path: '/app/admin/modals',
-      icon: 'ModalsIcon',
-      name: 'Modals',
-    },
+  
     {
       path: '/app/admin/courses',
       icon: 'TablesIcon',
       name: 'Courses',
     },
-    // {
-    //   icon: 'PagesIcon',
-    //   name: 'Pages',
-    //   routes: [
-    //     // submenu
-    //     {
-    //       path: '/login',
-    //       name: 'Login',
-    //     },
-    //     {
-    //       path: '/create-account',
-    //       name: 'Create account',
-    //     },
-    //     {
-    //       path: '/forgot-password',
-    //       name: 'Forgot password',
-    //     },
-    //     {
-    //       path: '/app/404',
-    //       name: '404',
-    //     },
-    //     {
-    //       path: '/app/blank',
-    //       name: 'Blank',
-    //     },
-    //   ],
-    // },
+    {
+      path: '/app/admin/mentors',
+      icon: 'TablesIcon',
+      name: 'Mentors',
+    },
+    
   ]
   
   export default routes

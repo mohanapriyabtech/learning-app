@@ -2,31 +2,14 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import dotenv from 'dotenv';
-
 import PageTitle from '../../components/Typography/PageTitle'
-import SectionTitle from '../../components/Typography/SectionTitle'
 import EditProject from '../EditProject';
-import {
-  Table,
-  TableHeader,
-  TableCell,
-  TableBody,
-  TableRow,
-  TableFooter,
-  TableContainer,
-  Badge,
-  Avatar,
-  Button,
-  Pagination,
-} from '@windmill/react-ui'
+import { Table, TableHeader,TableCell,TableBody,TableRow,TableFooter,TableContainer,Badge,Avatar,Button,Pagination } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons'
-
-import response from '../../utils/demo/tableData'
-// make a copy of the data, for the second table
-const response2 = response.concat([])
 dotenv.config();
 
-function Tables() {
+
+function MentorsList() {
   const apiUrl = process.env.REACT_APP_API_URL || ''
   const history = useHistory();
   const [dataTable, setDataTable] = useState([]);
@@ -44,7 +27,7 @@ function Tables() {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      const response = await axios.get(`${apiUrl}/api/v1/admin/list-course`,{ headers }); 
+      const response = await axios.get(`${apiUrl}/api/v1/admin/list-mentor`,{ headers }); 
       setDataTable(response.data.data); 
       setTotalResults(response.data.data.length); 
     } catch (error) {
@@ -61,7 +44,7 @@ function Tables() {
   };
 
   const handleCreateProjectClick = () => {
-    history.push('/app/forms');
+    history.push('/app/admin/mentors-create-form');
   };
 
 
@@ -72,7 +55,7 @@ function Tables() {
         Authorization: `Bearer ${token}`,
       };
   
-      await axios.delete(`${apiUrl}/api/v1/admin/delete-course/${projectId}`, { headers });
+      await axios.delete(`${apiUrl}/api/v1/admin/delete-mentor/${projectId}`, { headers });
   
       setDataTable(dataTable.filter(project => project.id !== projectId));
       setTotalResults(totalResults - 1);
@@ -90,7 +73,7 @@ function Tables() {
     localStorage.setItem("projectDescription",project.description);
     localStorage.setItem("fileUrl",project.file_url);
   
-    history.push(`/app/edit-project/${project._id}`)
+    history.push(`/app/admin/edit-courses/${project._id}`)
   };
   
   
@@ -99,11 +82,11 @@ function Tables() {
 
   return (
     <>
-      <PageTitle>Courses</PageTitle>
+      <PageTitle>Mentors</PageTitle>
 
       <div className="px-6 my-6 flex justify-end">
       <Button onClick={handleCreateProjectClick}>
-          Create courses
+          Create Mentor
           <span className="ml-2" aria-hidden="true">
             +
           </span>
@@ -115,8 +98,8 @@ function Tables() {
         <Table>
           <TableHeader>
             <tr>
-              <TableCell>Project</TableCell>
-              <TableCell>File</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Email</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Actions</TableCell>
@@ -129,13 +112,13 @@ function Tables() {
                   <div className="flex items-center text-sm">
                     {/* <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User avatar" /> */}
                     <div>
-                      <p className="font-semibold">{project.course}</p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400">{project.description}</p>
+                      <p className="font-semibold">{project.mentor_name}</p>
+                     
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm">{project.instructor}</span>
+                  <span className="text-sm">{project.email}</span>
                 </TableCell>
                 <TableCell>
                   <Badge type={project.status}>-</Badge>  
@@ -172,4 +155,4 @@ function Tables() {
   )
 }
 
-export default Tables
+export default MentorsList

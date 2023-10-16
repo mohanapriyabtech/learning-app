@@ -25,7 +25,7 @@ class courseCreateController {
         try {
 
             const result = await Course.create(req.body)
-            return responseHandler.successResponse(res, result, "course created successfully", 200);
+            return responseHandler.successResponse(res, result, "Course created successfully", 200);
 
         } catch (err) {
             return responseHandler.errorResponse(res, err);

@@ -8,6 +8,8 @@ const Charts = lazy(() => import('../pages/Charts'))
 const Buttons = lazy(() => import('../pages/Buttons'))
 const Modals = lazy(() => import('../pages/Modals'))
 const Courses = lazy(() => import('../pages/Admin/AdminCourses'))
+const Mentors = lazy(()  => import('../pages/Admin/MentorsList'))
+const MentorsCreateForm = lazy(()  => import('../pages/Admin/MentorCreateForm'))
 const Page404 = lazy(() => import('../pages/404'))
 const Blank = lazy(() => import('../pages/Blank'))
 const EditProject = lazy(()=> import('../pages/EditProject'))
@@ -53,13 +55,22 @@ const routes = [
     component: Buttons,
   },
   {
-    path: '/modals',
-    component: Modals,
+    path: '/courses-create-form',
+    component: Courses,
   },
   {
     path: '/courses',
     component: Courses,
   },
+  {
+    path: '/mentors',
+    component: Mentors,
+  },
+  {
+    path: '/mentors-create-form',
+    component: MentorsCreateForm,
+  },
+  
   {
     path: '/404',
     component: Page404,

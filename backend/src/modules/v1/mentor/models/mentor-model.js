@@ -16,18 +16,21 @@ const MentorSchema = new Schema({
     unique: true
   },
   password: {
-      type: String,
-      required: [true, 'password must not be empty'],
+    type: String,
+    required: [true, 'password must not be empty'],
   },
   status: {
-      type: Number,
-      default: 1
+    type: Number,
+    default: 1
   },
   phone_number: {
     type: String,
     required: true,
   },
   address: {
+    type: String,
+  },
+  profile_image: {
     type: String,
   },
   created_at: {

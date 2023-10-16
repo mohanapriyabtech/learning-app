@@ -6,21 +6,8 @@ import dotenv from 'dotenv';
 import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
 import EditProject from '../EditProject';
-import {
-  Table,
-  TableHeader,
-  TableCell,
-  TableBody,
-  TableRow,
-  TableFooter,
-  TableContainer,
-  Badge,
-  Avatar,
-  Button,
-  Pagination,
-} from '@windmill/react-ui'
+import { Table,TableHeader,TableCell,TableBody,TableRow,TableFooter,TableContainer,Badge,Avatar,Button,Pagination} from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons'
-
 import response from '../../utils/demo/tableData'
 // make a copy of the data, for the second table
 const response2 = response.concat([])
@@ -61,7 +48,7 @@ function Tables() {
   };
 
   const handleCreateProjectClick = () => {
-    history.push('/app/forms');
+    history.push('/app/mentor/courses-create-form');
   };
 
 
@@ -90,7 +77,7 @@ function Tables() {
     localStorage.setItem("projectDescription",project.description);
     localStorage.setItem("fileUrl",project.file_url);
   
-    history.push(`/app/edit-project/${project._id}`)
+    history.push(`/app/mentor/edit-course/${project._id}`)
   };
   
   
@@ -99,11 +86,11 @@ function Tables() {
 
   return (
     <>
-      <PageTitle>Tables</PageTitle>
+      <PageTitle>Courses</PageTitle>
 
       <div className="px-6 my-6 flex justify-end">
       <Button onClick={handleCreateProjectClick}>
-          Create project 
+          Create course
           <span className="ml-2" aria-hidden="true">
             +
           </span>

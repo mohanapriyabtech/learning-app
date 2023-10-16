@@ -22,7 +22,7 @@ function App() {
           <Route path="/forgot-password" component={ForgotPassword} />
 
           {/* Place new routes over this */}
-          <Route path="/app" component={Layout} />
+          {/* <Route path="/app" component={Layout} /> */}
           <Route path="/app/admin" component={AdminLayout} />
           <Route path="/app/mentor" component={MentorLayout} />
           {/* User Dashboard Route */}
