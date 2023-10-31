@@ -13,7 +13,7 @@ dotenv.config();
 const validationSchema = Yup.object().shape({
     title: Yup.string().required('Name is required'),
     description: Yup.string().email('Invalid email address').required('Email is required'),
-    instructor: Yup.string()
+    password: Yup.string()
       .required('Password is required')
       .min(8, 'Password must be at least 8 characters long')
       .matches(

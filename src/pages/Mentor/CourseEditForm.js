@@ -16,7 +16,7 @@ const validationSchema = Yup.object().shape({
 
 
 
-function EditProject() {
+function EditCourse() {
   const apiUrl = process.env.REACT_APP_API_URL;
   const history = useHistory();
   const [showSuccessModal, setShowSuccessModal] = useState(false); 
@@ -200,4 +200,4 @@ function EditProject() {
   );
 }
 
-export default EditProject;
+export default EditCourse;

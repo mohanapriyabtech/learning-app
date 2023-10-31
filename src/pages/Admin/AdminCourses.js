@@ -61,7 +61,7 @@ function Tables() {
   };
 
   const handleCreateProjectClick = () => {
-    history.push('/app/forms');
+    history.push('/app/admin/create-course');
   };
 
 
@@ -90,7 +90,7 @@ function Tables() {
     localStorage.setItem("projectDescription",project.description);
     localStorage.setItem("fileUrl",project.file_url);
   
-    history.push(`/app/edit-project/${project._id}`)
+    history.push(`/app/admin/edit-mentor/${project._id}`)
   };
   
   
@@ -102,12 +102,12 @@ function Tables() {
       <PageTitle>Courses</PageTitle>
 
       <div className="px-6 my-6 flex justify-end">
-      <Button onClick={handleCreateProjectClick}>
+      {/* <Button onClick={handleCreateProjectClick}>
           Create courses
           <span className="ml-2" aria-hidden="true">
             +
           </span>
-        </Button>
+        </Button> */}
       </div>
 
 

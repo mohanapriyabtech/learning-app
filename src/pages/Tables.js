@@ -87,7 +87,7 @@ function Tables() {
     localStorage.setItem("projectDescription",project.description);
     localStorage.setItem("fileUrl",project.file_url);
   
-    history.push(`/app/edit-project/${project._id}`)
+    history.push(`/app/edit-course/${project._id}`)
   };
   
   

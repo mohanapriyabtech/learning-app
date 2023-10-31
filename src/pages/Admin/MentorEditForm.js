@@ -1,12 +1,12 @@
 import React, { useState, useEffect , useRef  } from 'react';
 import { useHistory } from 'react-router-dom';
-import PageTitle from '../components/Typography/PageTitle';
+import PageTitle from '../../components/Typography/PageTitle';
 import { Input, Label, Textarea, Button } from '@windmill/react-ui';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
-import Modals from "../pages/Modals"
+import Modals from "../../pages/Modals"
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -62,23 +62,23 @@ function EditProject() {
         history.push()
       }
 
-      // const token = localStorage.getItem("token");
-      // const response = await axios.patch(`${apiUrl}/api/v1/user/update-project/${id`}, form_data, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //     Authorization: `Bearer ${token}`
-      //   },
-      // });
+      const token = localStorage.getItem("token");
+      const response = await axios.patch(`${apiUrl}/api/v1/user/update-project/${id}`, form_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        },
+      });
   
-      // console.log('Form submission API response:', response.data.data);
+      console.log('Form submission API response:', response.data.data);
 
-      // if (response.status === 200) {
+      if (response.status === 200) {
   
-      //     formik.resetForm();
-      //     setModalMessage('Project file updated successfully!'); 
-      //     setShowSuccessModal(true); 
+          formik.resetForm();
+          setModalMessage('Project file updated successfully!'); 
+          setShowSuccessModal(true); 
         
-      // }
+      }
     } catch (error) {
       console.error('API error:', error);
     }

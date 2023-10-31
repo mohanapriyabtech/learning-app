@@ -73,7 +73,7 @@ function MentorsList() {
     localStorage.setItem("projectDescription",project.description);
     localStorage.setItem("fileUrl",project.file_url);
   
-    history.push(`/app/admin/edit-courses/${project._id}`)
+    history.push(`/app/admin/mentors-edit-form/${project._id}`)
   };
   
   

@@ -30,6 +30,7 @@ import createLessonController from '../controllers/lesson-management/create-less
 import deleteLessonById from '../controllers/lesson-management/delete-lesson-by-id';
 import getLessonById from '../controllers/lesson-management/get-lesson-by-id';
 import listLesson from '../controllers/lesson-management/list-lesson';
+import updateCourseController from '../controllers/course-management/update-course-controller';
 
 
 const adminRouter = express.Router();
@@ -71,6 +72,7 @@ adminRouter.get('/list-course', listCourse.list);
 adminRouter.get('/get-course/:id', paramsValidator.validate, getCourseById.get);
 adminRouter.delete('/delete-course/:id', paramsValidator.validate,deleteCourseById.delete);
 adminRouter.post('/create-course', createCourseController.create);
+adminRouter.patch('/update-course', updateCourseController.update);
 
 //lesson management
 adminRouter.get('/list-lesson', listLesson.list);

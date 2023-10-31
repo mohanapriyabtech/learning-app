@@ -1,38 +1,35 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link , useHistory } from 'react-router-dom';
-import dotenv from 'dotenv';
-import ImageLight from './../../assets/img/login-office.jpeg'
-import ImageDark from './../../assets/img/login-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../../icons'
-import { Label, Input, Button } from '@windmill/react-ui'
+import ImageLight from '../../assets/img/create-account-office.jpeg'
+import ImageDark from '../../assets/img/create-account-office-dark.jpeg'
+import { Input, Label, Button } from '@windmill/react-ui'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-dotenv.config();
 
-
-const loginSchema = Yup.object().shape({
+const SignupSchema = Yup.object().shape({
+  name: Yup.string()
+    .max(15, 'Must be 15 characters or less')
+    .required('Required'),
   email: Yup.string()
-  .email('Invalid email address')
-  .required('Required'),
+    .email('Invalid email address')
+    .required('Required'),
   password: Yup.string()
     .min(3, 'Password length should be minimum 3')
     .max(15, 'Password length should be maximum 15')
-    .required('Required')
+    .required('Required'),
 });
 
 function Login() {
-  const apiUrl = process.env.REACT_APP_API_URL || ''
-
+  const history = useHistory();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    confirmPassword: '',
   });
 
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-
-  const history = useHistory();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,17 +40,19 @@ function Login() {
   };
 
   const handleSubmit = async (values) => {
+    // e.preventDefault();
     try {
-        
-      const response = await axios.post(`${apiUrl}/api/v1/admin/login`, values);
+      const response = await axios.post('http://localhost:4000/api/v1/mentor/signup', values);
 
+     
       if (response.status === 200) {
-        localStorage.setItem('token', response.data.data.session.session_token);
-        setSuccessMessage('login successful.');
+        setSuccessMessage('Registration successful.');
         setError(null);
-        
         formik.resetForm();
-        history.push('/app/admin');
+        history.push("/mentor/dashboard/login")
+
+        // Redirect to the login page
+        // history.push('/login');
       }
     } catch (error) {
       if (error.response) {
@@ -63,23 +62,16 @@ function Login() {
       }
     }
   };
-  
-  const resetForm = () => {
-    setFormData({
-      email: '',
-      password: '',
-    });
-  };
-  
+
   const formik = useFormik({
     initialValues: {
+      name: '',
       email: '',
       password: '',
     },
-    validationSchema:loginSchema,
-    onSubmit: handleSubmit,
+    validationSchema: SignupSchema,
+    onSubmit: handleSubmit, // Reference the handleSubmit function here
   });
-
 
   return (
     <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
@@ -101,8 +93,23 @@ function Login() {
           </div>
           <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
             <div className="w-full">
-              <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Login</h1>
+              <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+                Create account
+              </h1>
               <form onSubmit={formik.handleSubmit}>
+                <Label className="mt-4">
+                  <span>Name</span>
+                  <Input
+                    className="mt-1"
+                    placeholder="John"
+                    type="text"
+                    name="name"
+                    {...formik.getFieldProps('name')}
+                  />
+                  {formik.touched.name && formik.errors.name ? (
+                    <div className="text-red-600">{formik.errors.name}</div>
+                  ) : null}
+                </Label>
                 <Label>
                   <span>Email</span>
                   <Input
@@ -110,60 +117,56 @@ function Login() {
                     type="email"
                     placeholder="john@doe.com"
                     name="email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur} // Add onBlur to track touched state
+                    {...formik.getFieldProps('email')}
                   />
+                  {formik.touched.email && formik.errors.email ? (
+                    <div className="text-red-600">{formik.errors.email}</div>
+                  ) : null}
                 </Label>
-
-                {formik.touched.email && formik.errors.email ? (
-                  <div className="text-red-600">{formik.errors.email}</div>
-                ) : null}
-
                 <Label className="mt-4">
                   <span>Password</span>
                   <Input
                     className="mt-1"
-                    type="password"
                     placeholder="***************"
+                    type="password"
                     name="password"
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur} // Add onBlur to track touched state
+                    {...formik.getFieldProps('password')}
                   />
+                  {formik.touched.password && formik.errors.password ? (
+                    <div className="text-red-600">{formik.errors.password}</div>
+                  ) : null}
+                </Label>
+                <Label className="mt-6" check>
+                  <Input type="checkbox" {...formik.getFieldProps('agree')} />
+                  <span className="ml-2">
+                    I agree to the <span className="underline">privacy policy</span>
+                  </span>
                 </Label>
 
-                {formik.touched.password && formik.errors.password ? (
-                  <div className="text-red-600">{formik.errors.password}</div>
-                ) : null}
-
-                <Button className="mt-4" block type="submit" onClick={formik.handleSubmit}>
-                  Log in
+                <Button type="submit" block className="mt-4">
+                  Create account
                 </Button>
               </form>
-
-              {/* Display error message */}
               {error && (
-                <div className="mt-4 text-red-600 dark:text-red-400">{error}</div>
+                <div className="mt-4 text-red-600 dark:text-red-400">
+                  {error}
+                </div>
               )}
+              {successMessage && (
+                <div className="mt-4 text-green-600 dark:text-green-400">
+                  {successMessage}
+                </div>
+              )}
+
 
               <hr className="my-8" />
 
               <p className="mt-4">
                 <Link
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/forgot-password"
+                  to="/login"
                 >
-                  Forgot your password?
-                </Link>
-              </p>
-              <p className="mt-1">
-                <Link
-                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/admin/create-account"
-                  onClick={resetForm} 
-                >
-                  Create account
+                  Already have an account? Login
                 </Link>
               </p>
             </div>

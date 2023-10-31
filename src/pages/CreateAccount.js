@@ -43,7 +43,7 @@ function Login() {
   const handleSubmit = async (values) => {
     // e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/v1/user/signup', values);
+      const response = await axios.post('http://localhost:4000/api/v1/admin/signup', values);
 
      
       if (response.status === 200) {
@@ -52,7 +52,7 @@ function Login() {
         setError(null);
        
         formik.resetForm();
-        history.push("/login")
+        history.push("/admin/dashboard/login")
 
         // Redirect to the login page
         // history.push('/login');
@@ -163,15 +163,6 @@ function Login() {
 
 
               <hr className="my-8" />
-
-              <Button block layout="outline">
-                <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Github
-              </Button>
-              <Button block className="mt-4" layout="outline">
-                <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Twitter
-              </Button>
 
               <p className="mt-4">
                 <Link
