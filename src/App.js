@@ -12,12 +12,15 @@ const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const AdminLogin = lazy(()=> import('./pages/Admin/AdminLogin'))
 const MentorSignup = lazy(()=> import('./pages/Mentor/MentorSignup'))
 
+
+
 function App() {
   return (
     <>
       <Router>
         <AccessibleNavigationAnnouncer />
         <Switch>
+       
           {/* <Route path="/login" component={Login} /> */}
           <Route path="/admin/create-account" component={CreateAccount} />
           <Route path="/forgot-password" component={ForgotPassword} />
@@ -37,6 +40,7 @@ function App() {
 
           {/* If you have an index page, you can remove this Redirect */}
           {/* <Redirect exact from="/" to="/login" /> */}
+        
         </Switch>
       </Router>
     </>

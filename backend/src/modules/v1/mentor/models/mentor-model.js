@@ -21,7 +21,7 @@ const MentorSchema = new Schema({
   },
   status: {
     type: Number,
-    default: 1
+    default: 0
   },
   phone_number: {
     type: String,

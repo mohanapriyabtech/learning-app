@@ -22,10 +22,10 @@ function EditCourse() {
   const [showSuccessModal, setShowSuccessModal] = useState(false); 
   const [modalMessage, setModalMessage] = useState(''); 
 
-  const closeSuccessModal = () => {
-    setShowSuccessModal(false);
-    history.push('/app/projects');
-  };
+//   const closeSuccessModal = () => {
+//     setShowSuccessModal(false);
+//     history.push('/app/projects');
+//   };
 
   let {id}  = useParams();
 

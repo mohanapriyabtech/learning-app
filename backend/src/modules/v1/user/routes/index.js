@@ -12,6 +12,13 @@ import resetPassword from '../controllers/user-management/reset-password';
 import logout from '../controllers/user-management/logout';
 
 import userAuthentication from '../authentication/user-authentication';
+import listCourse from '../../mentor/controllers/course-management/list-course';
+import getCourseById from '../../mentor/controllers/course-management/get-course-by-id';
+import deleteCourseById from '../../mentor/controllers/course-management/delete-course-by-id';
+import createCourseController from '../../mentor/controllers/course-management/create-course-controller';
+import updateCourseController from '../../admin/controllers/course-management/update-course-controller';
+import listMentor from '../../mentor/controllers/mentor-management/list-mentor';
+import getMentorById from '../../mentor/controllers/mentor-management/get-mentor-by-id';
 
 
 const userRouter = express.Router();
@@ -33,6 +40,17 @@ userRouter.patch('/reset-password/:id', paramsValidator.validate,userAuthenticat
 userRouter.delete('/logout', userAuthentication.check,logout.delete);
 
 
+//course management
+userRouter.get('/list-course', listCourse.list);
+userRouter.get('/list-mentor', listMentor.list);
+userRouter.get('/get-course/:id', paramsValidator.validate, getCourseById.get);
+userRouter.delete('/delete-course/:id', paramsValidator.validate,deleteCourseById.delete);
+userRouter.post('/create-course', createCourseController.create);
+userRouter.post('/edit-course/:id', updateCourseController.update);
+
+//mentor management
+
+userRouter.get('/get-mentor/:id', paramsValidator.validate, getMentorById.get);
 
 
 

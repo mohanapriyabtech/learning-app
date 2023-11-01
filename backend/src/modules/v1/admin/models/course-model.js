@@ -9,19 +9,11 @@ const { Schema, ObjectId } = mongoose;
  */
 
 const CourseSchema = new Schema({
-
-    title: {
-      type: String,
-      required: true,
-      trim: true,
+    instructor: {
+      type: ObjectId,
     },
     description: {
       type: String,
-      required: true,
-    },
-    instructor: {
-      type: ObjectId,
-      ref: 'Mentor', 
       required: true,
     },
     course: {
@@ -29,7 +21,14 @@ const CourseSchema = new Schema({
       required: true,
     },
     cover_image: {
-      type: String, 
+      type: String
+    },
+    cover_image_url: {
+      type: String
+    },
+    status: {
+      type: Number,
+      default: 0
     },
     created_at: {
       type: Date,

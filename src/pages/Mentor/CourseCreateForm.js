@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import PageTitle from '../../components/Typography/PageTitle';
 import { Input, Label, Textarea, Button } from '@windmill/react-ui';
+
 import axios from 'axios'; 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -10,10 +11,10 @@ dotenv.config();
 
 
 
+
+
 const validationSchema = Yup.object().shape({
-    title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
-    instructor: Yup.string().required('Instructor is required'),
     course: Yup.string().required('Instructor is required'),
     cover_image: Yup.string()
 });
@@ -25,9 +26,7 @@ function Forms() {
   const history = useHistory();
   const [instructors, setInstructors] = useState([]);
   const [formData, setFormData] = useState({
-    title: '',
     description: '',
-    instructor: '',
     course: '',
     cover_image: null,
   });
@@ -49,18 +48,11 @@ useEffect(() => {
 }, [apiUrl]);
   
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    formik.setFieldValue('cover_image', file);
-  };
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  formik.setFieldValue('cover_image', file);
+};
 
 
   const handleCourseSubmit= async() => {
@@ -82,9 +74,8 @@ useEffect(() => {
     try {
       
       const form_data = new FormData();
-      form_data.append('title', values.title);
+    
       form_data.append('description', values.description);
-      form_data.append('instructor', values.instructor);
       form_data.append('course', values.course);
       // form_data.append('cover_image', values.cover_image);
   
@@ -129,24 +120,24 @@ useEffect(() => {
 
   return (
     <>
-      <PageTitle>Forms</PageTitle>
+      <PageTitle>Course Create form</PageTitle>
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style={{ width: '50%' }}>
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
             <Label>
-              <span>Title</span>
+              <span>Course Name</span>
               <Input 
                 className="mt-1"
-                placeholder=""
-                name="title"
-                value={formik.values.title}
+                placeholder="course name"
+                name="course"
+                value={formik.values.course}
                 onChange={formik.handleChange}
                 // style={{width:"50%"}}
               />
             </Label>
-            {formik.touched.title && formik.errors.title ? (
-              <div className="text-red-600">{formik.errors.title}</div>
+            {formik.touched.course && formik.errors.course ? (
+              <div className="text-red-600">{formik.errors.course}</div>
             ) : null}
           </div>
 
@@ -190,7 +181,7 @@ useEffect(() => {
               <div className="text-red-600">{formik.errors.instructor}</div>
             ) : null}
           </div> */}
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <Label>
               <span>Course</span>
               <Textarea
@@ -205,7 +196,7 @@ useEffect(() => {
             {formik.touched.course && formik.errors.course ? (
               <div className="text-red-600">{formik.errors.course}</div>
             ) : null}
-          </div>
+          </div> */}
          
           <div className="mb-4">
             <Label>

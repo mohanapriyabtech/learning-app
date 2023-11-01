@@ -103,7 +103,7 @@ function Forms() {
 
   return (
     <>
-      <PageTitle>Forms</PageTitle>
+      <PageTitle>Mentor Create Form</PageTitle>
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style={{ width: '50%' }}>
         <form onSubmit={formik.handleSubmit}>
@@ -143,6 +143,11 @@ function Forms() {
           <div className="mb-4">
             <Label>
               <span>Password</span>
+              <br></br>
+              <span className="text-sm text-green-600">
+                ( Password should contain at least 8 characters including
+                uppercase, lowercase, numbers, and special characters.)
+              </span>
               <Input
                 type="password"
                 className="mt-1 password-input"
@@ -153,6 +158,7 @@ function Forms() {
                 onChange={formik.handleChange}
               />
             </Label>
+            
             {formik.touched.password && formik.errors.password ? (
               <div className="text-red-600">{formik.errors.password}</div>
             ) : null}

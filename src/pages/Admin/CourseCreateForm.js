@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import PageTitle from '../../components/Typography/PageTitle';
 import { Input, Label, Textarea, Button } from '@windmill/react-ui';
 import axios from 'axios'; 
+// import { useToaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import dotenv from 'dotenv';
@@ -11,62 +12,79 @@ dotenv.config();
 
 
 const validationSchema = Yup.object().shape({
-    title: Yup.string().required('Name is required'),
-    description: Yup.string().email('Invalid email address').required('Email is required'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(8, 'Password must be at least 8 characters long')
-      .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-        'Password must contain at least one letter, one number, and one special character'
-      ),
-    course: Yup.string()
-      .required('Phone number is required')
-      .matches(/^\d{10}$/, 'Phone number must be a 10-digit number'),
-    profile_image: Yup.string(),
-    address: Yup.string(),
+    description: Yup.string().required('Description is required'),
+    course: Yup.string().required('course is required'),
+    instructor: Yup.string().required('Instructor is required'),
+    cover_image: Yup.string()
 });
 
 
 function Forms() {
   const apiUrl = process.env.REACT_APP_API_URL;
+  console.log(apiUrl,"api")
   const history = useHistory();
+  const [instructors, setInstructors] = useState([]);
   const [formData, setFormData] = useState({
-    mentor_name: '',
-    email: '',
-    address: '',
-    phone_number: '',
-    password: '',
-    profile_image: null,
+    description: '',
+    course: '',
+    cover_image: null,
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+
+
+
+  
+useEffect(() => {
+  const fetchInstructors = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/v1/mentor/list-mentor`);
+      const instructorData = response.data.data;
+      setInstructors(instructorData);
+      
+    } catch (error) {
+      console.error('Error fetching instructor data:', error);
+    }
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    formik.setFieldValue('profile_image', file);
-  };
+  fetchInstructors();
+}, [apiUrl]);
+  
+
+
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  formik.setFieldValue('cover_image', file);
+};
+
+
+  const handleCourseSubmit= async() => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/v1/admin/create-course`);
+      const instructorData = response.data.data;
+      setInstructors(instructorData);
+      history.push('/app/admin/course')
+      // showToast()
+      
+    } catch (error) {
+      console.error('Error fetching instructor data:', error);
+    }
+
+
+   
+  }
 
   const handleSubmit = async (values) => {
     try {
       
       const form_data = new FormData();
-      form_data.append('mentor_name', values.mentor_name);
-      form_data.append('email', values.email);
-      form_data.append('phone_number', values.phone_number);
-      form_data.append('address', values.address);
-      form_data.append('password', values.password);
-      // form_data.append('file', formData.file); 
+    
+      form_data.append('description', values.description);
+      form_data.append('course', values.course);
+      form_data.append('instructor', values.instructor);
   
       const file_data = new FormData();
-      file_data.append('media', formik.values.profile_image);
-      file_data.append('service', 'users');
+      file_data.append('media', formik.values.cover_image);
+      file_data.append('service', 'courses');
   
       const fileResponse = await axios.post(`${apiUrl}/api/v1/file-upload/upload`, file_data, {
         headers: {
@@ -76,10 +94,11 @@ function Forms() {
   
       console.log('File upload API response:', fileResponse.data.data);
   
-      form_data.append('profile_image', fileResponse.data.data[0].name);
+      form_data.append('cover_image', fileResponse.data.data[0].name);
+      form_data.append('cover_image_url', fileResponse.data.data[0].url);
   
       const token = localStorage.getItem("token");
-      const response = await axios.post(`${apiUrl}/api/v1/admin/create-mentor`, form_data, {
+      const response = await axios.post(`${apiUrl}/api/v1/mentor/create-course`, form_data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -90,7 +109,7 @@ function Forms() {
 
       if (response.status === 200) {
         formik.resetForm();
-        history.push('/app/admin/mentors');
+        history.push('/app/admin/courses');
       }
     } catch (error) {
       console.error('API error:', error);
@@ -105,92 +124,84 @@ function Forms() {
 
   return (
     <>
-      <PageTitle>Forms</PageTitle>
+      <PageTitle>Course Create form</PageTitle>
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style={{ width: '50%' }}>
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
             <Label>
-              <span>Name</span>
+              <span>Course Name</span>
               <Input 
                 className="mt-1"
-                placeholder="Jane Doe"
-                name="mentor_name"
-                value={formik.values.mentor_name}
+                placeholder="course name"
+                name="course"
+                value={formik.values.course}
                 onChange={formik.handleChange}
                 // style={{width:"50%"}}
               />
             </Label>
-            {formik.touched.mentor_name && formik.errors.mentor_name ? (
-              <div className="text-red-600">{formik.errors.mentor_name}</div>
+            {formik.touched.course && formik.errors.course ? (
+              <div className="text-red-600">{formik.errors.course}</div>
             ) : null}
           </div>
 
           <div className="mb-4">
             <Label>
-              <span>Email</span>
+              <span>Description</span>
               <Textarea
                 className="mt-1"
-                rows="3"
-                placeholder="abc@gmail.com"
-                name="email"
-                value={formik.values.email}
+                rows="2"
+                placeholder=""
+                name="description"
+                value={formik.values.description}
                 onChange={formik.handleChange}
               />
             </Label>
-            {formik.touched.email && formik.errors.email ? (
-              <div className="text-red-600">{formik.errors.email}</div>
+            {formik.touched.description && formik.errors.description ? (
+              <div className="text-red-600">{formik.errors.description}</div>
             ) : null}
           </div>
           <div className="mb-4">
             <Label>
-              <span>Password</span>
-              <Textarea
-                className="mt-1"
-                rows="3"
-                placeholder="********"
-                name="password"
-                value={formik.values.password}
+            <span>Instructor</span>
+            <select
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                name="instructor" 
+                value={formik.values.instructor}
                 onChange={formik.handleChange}
-              />
+              >
+                
+                <option value="">Select an instructor</option>
+
+                {instructors.map((instructor) => (
+                  <option key={instructor._id} value={instructor._id} style={{ height: '50px' }} >
+                    {instructor.mentor_name}
+                  </option>
+                ))}
+                
+              </select>
             </Label>
-            {formik.touched.password && formik.errors.password ? (
-              <div className="text-red-600">{formik.errors.password}</div>
+            {formik.touched.instructor && formik.errors.instructor ? (
+              <div className="text-red-600">{formik.errors.instructor}</div>
             ) : null}
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <Label>
-              <span>Mobile Number</span>
-              <Textarea
-                className="mt-1"
-                rows="3"
-                placeholder="0000000000"
-                name="phone_number"
-                value={formik.values.phone_number}
-                onChange={formik.handleChange}
-              />
-            </Label>
-            {formik.touched.phone_number && formik.errors.phone_number ? (
-              <div className="text-red-600">{formik.errors.phone_number}</div>
-            ) : null}
-          </div>
-          <div className="mb-4">
-            <Label>
-              <span>Address</span>
+              <span>Course</span>
               <Textarea
                 className="mt-1"
                 rows="3"
                 placeholder=""
-                name="address"
-                value={formik.values.address}
+                name="course"
+                value={formik.values.course}
                 onChange={formik.handleChange}
               />
             </Label>
-            {formik.touched.address && formik.errors.address ? (
-              <div className="text-red-600">{formik.errors.address}</div>
+            {formik.touched.course && formik.errors.course ? (
+              <div className="text-red-600">{formik.errors.course}</div>
             ) : null}
-          </div>
-
+          </div> */}
+         
           <div className="mb-4">
             <Label>
               <span className="text-gray-700 dark:text-gray-400">Profile Image Upload</span>
@@ -198,7 +209,7 @@ function Forms() {
                 type="file"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
                 accept=".png, .jpeg, .jpg, .svg, .gif"
-                name="profile_image"
+                name="cover_image"
                 // onChange={(e) => {
                 //   console.log(e, "e");
                 //   formik.setFieldValue('file', e.currentTarget.files[0]);
@@ -208,8 +219,8 @@ function Forms() {
 
               />
             </Label>
-            {formik.touched.profile_image && formik.errors.profile_image ? (
-              <div className="text-red-600">{formik.errors.profile_image}</div>
+            {formik.touched.cover_image && formik.errors.cover_image ? (
+              <div className="text-red-600">{formik.errors.cover_image}</div>
             ) : null}
           </div>
 
@@ -218,6 +229,7 @@ function Forms() {
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               disabled={formik.isSubmitting}
+              onClick= {handleCourseSubmit}
             >
               Submit
             </Button>

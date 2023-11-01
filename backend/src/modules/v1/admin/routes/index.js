@@ -31,7 +31,9 @@ import deleteLessonById from '../controllers/lesson-management/delete-lesson-by-
 import getLessonById from '../controllers/lesson-management/get-lesson-by-id';
 import listLesson from '../controllers/lesson-management/list-lesson';
 import updateCourseController from '../controllers/course-management/update-course-controller';
-
+import updateMentor from '../../mentor/controllers/mentor-management/update-mentor';
+import searchCourseController from '../controllers/course-management/search-course-controller';
+import adminAuthentication from '../authentication/admin-authentication';
 
 const adminRouter = express.Router();
 
@@ -66,13 +68,15 @@ adminRouter.get('/list-mentor', listMentor.list);
 adminRouter.get('/get-mentor/:id', paramsValidator.validate, getMentorById.get)
 adminRouter.delete('/delete-mentor/:id', paramsValidator.validate, deleteMentor.delete);
 adminRouter.post('/create-mentor', createMentor.create);
+adminRouter.patch('/update-mentor/:id',updateMentor.update);
 
 //course management
 adminRouter.get('/list-course', listCourse.list);
 adminRouter.get('/get-course/:id', paramsValidator.validate, getCourseById.get);
 adminRouter.delete('/delete-course/:id', paramsValidator.validate,deleteCourseById.delete);
 adminRouter.post('/create-course', createCourseController.create);
-adminRouter.patch('/update-course', updateCourseController.update);
+adminRouter.patch('/edit-course/:id', updateCourseController.update);
+adminRouter.get('/search-course',searchCourseController.search);
 
 //lesson management
 adminRouter.get('/list-lesson', listLesson.list);

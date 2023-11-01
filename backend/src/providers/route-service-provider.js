@@ -24,6 +24,12 @@ export default class RouteServiceProvider extends BaseConfig {
         this.app.use('/api/v1/mentor', mentorRouter);
         this.app.use('/api/v1/admin', adminRouter);
         this.app.use('/api/v1/file-upload', fileRouter);
+        // Serve static images
+        this.app.use('/images', this.express.static('/home/sparkout/Documents/projects/learning-app/backend/var/www/html/upload'));
+
+
+
+        
     }
 
     routeNotFound() {

@@ -3,6 +3,7 @@ import xss from 'xss-clean';
 import express from 'express';
 import fileUpload from 'express-fileupload';
 import rateLimit from 'express-rate-limit'
+import path from "path"
 
 /**
  * cors middleware options
@@ -49,16 +50,18 @@ export default class Express {
         this.app.use(limiter)
         // error handling middleware
         this.app.use(function (err, req, res, next) {
-            if (err.message === 'Not allowed by CORS') {
-                res.status(403).json({
-                    status: false,
-                    statusCode: 403,
-                    message: 'please visit our official website'
-                })
-            } else {
-                next(err);
-            }
+            // if (err.message === 'Not allowed by CORS') {
+            //     res.status(403).json({
+            //         status: false,
+            //         statusCode: 403,
+            //         message: 'please visit our official website'
+            //     })
+            // } else {
+            //     next(err);
+            // }
         });
+        this.app.use('/images', this.express.static('/home/sparkout/Documents/projects/learning-app/backend/var/www/html/upload'));
+
     }
 }
 

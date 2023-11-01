@@ -1,53 +1,73 @@
-import React, { useState, useEffect , useRef  } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import PageTitle from '../../components/Typography/PageTitle';
 import { Input, Label, Textarea, Button } from '@windmill/react-ui';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
-import Modals from "../../pages/Modals"
 import dotenv from 'dotenv';
+import Modals from "../../pages/Modals";
+import { useParams } from 'react-router-dom';
+
 dotenv.config();
 
 const validationSchema = Yup.object().shape({
-  file: Yup.mixed().required('File is required'),
+  mentor_name: Yup.string(),
+  phone_number: Yup.string()
+      .matches(/^\d{10}$/, 'Phone number must be a 10-digit number'),
+  profile_image: Yup.string(),
+  address: Yup.string(),
 });
-
-
 
 function EditProject() {
   const apiUrl = process.env.REACT_APP_API_URL;
   const history = useHistory();
-  const [showSuccessModal, setShowSuccessModal] = useState(false); 
-  const [modalMessage, setModalMessage] = useState(''); 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const closeSuccessModal = () => {
     setShowSuccessModal(false);
     history.push('/app/projects');
   };
 
-  let {id}  = useParams();
+  const { id } = useParams();
 
   const initialValues = {
-    name: localStorage.getItem('projectName') || '',
-    description: localStorage.getItem('projectDescription') || '', 
-    file:null, 
+    mentor_name: localStorage.getItem("mentor_name") || 'bb',
+    email: localStorage.getItem("email") || '',
+    phone_number: localStorage.getItem("phone_number") || '',
+    address: localStorage.getItem("address") || '',
+    password: localStorage.getItem("password") || '',
+    profile_image: null
   };
 
   const handleFileChange = (e) => {
-    formik.setFieldValue('file', e.target.files[0]);
+    formik.setFieldValue('profile_image', e.target.files[0]);
   };
+  const fileName = localStorage.getItem('profile_image')
+  console.log(fileName,"fileName")
+
 
   const handleSubmit = async (values) => {
     try {
-      console.log(id);
-      const form_data = new FormData();
-      form_data.append('file', values.file);
 
+
+      const form_data = new FormData();
+     
+      if (formik.values.mentor_name !== initialValues.mentor_name) {
+        form_data.append('mentor_name', formik.values.mentor_name);
+      }
+      if (formik.values.phone_number !== initialValues.phone_number) {
+        form_data.append('phone_number', formik.values.phone_number);
+      }
+      if (formik.values.address !== initialValues.address) {
+        form_data.append('address', formik.values.address);
+      }
+    
+      // form_data.append('file', formData.file); 
       const file_data = new FormData();
-      file_data.append('media', formik.values.file);
-      file_data.append('service', 'users');
+      file_data.append('media', formik.values.profile_image);
+      file_data.append('service', 'mentors');
   
       const fileResponse = await axios.post(`${apiUrl}/api/v1/file-upload/upload`, file_data, {
         headers: {
@@ -57,83 +77,131 @@ function EditProject() {
   
       console.log('File upload API response:', fileResponse.data.data);
   
-      form_data.append('file_url', fileResponse.data.data[0].name);
-      if (fileResponse.status === 200) {
-        history.push()
-      }
+      form_data.append('profile_image', fileResponse.data.data[0].name);
 
+      // if (formik.values.phone_number !== initialValues.phone_number) {
+      //   form_data.append('phone_number', formik.values.phone_number);
+      // }
+     
+
+  
       const token = localStorage.getItem("token");
-      const response = await axios.patch(`${apiUrl}/api/v1/user/update-project/${id}`, form_data, {
+      const response = await axios.patch(`${apiUrl}/api/v1/admin/update-mentor/${id}`, form_data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
         },
       });
-  
-      console.log('Form submission API response:', response.data.data);
-
+ 
       if (response.status === 200) {
-  
-          formik.resetForm();
-          setModalMessage('Project file updated successfully!'); 
-          setShowSuccessModal(true); 
-        
+        formik.resetForm();
+        setModalMessage('Mentor updated successfully!');
+        setShowSuccessModal(true);
+        history.push('/app/admin/mentors')
       }
     } catch (error) {
       console.error('API error:', error);
     }
-   
   };
 
-  const fileName = localStorage.getItem('fileUrl')
-
-  
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: handleSubmit,
   });
-  
 
   return (
     <>
-      <PageTitle>Forms</PageTitle>
+      <PageTitle>Edit Project</PageTitle>
 
-      <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+      <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style={{ width: '50%' }}>
         <form onSubmit={formik.handleSubmit}>
-          {/* Name */}
           <div className="mb-4">
             <Label>
               <span>Name</span>
-              <Input
+              <Input 
                 className="mt-1"
                 placeholder="Jane Doe"
-                name="name"
-                value={initialValues.name}
-                disabled
+                name="mentor_name"
+                value={formik.values.mentor_name}
+                onChange={formik.handleChange}
+                
+                // style={{width:"50%"}}
               />
             </Label>
-           
+            {formik.touched.mentor_name && formik.errors.mentor_name ? (
+              <div className="text-red-600">{formik.errors.mentor_name}</div>
+            ) : null}
           </div>
 
-          {/* Description */}
           <div className="mb-4">
             <Label>
-              <span>Description</span>
+              <span>Email</span>
               <Textarea
                 className="mt-1"
                 rows="3"
-                placeholder="Enter a description."
-                name="description"
-                value={initialValues.description}
+                placeholder="abc@gmail.com"
+                name="email"
+                value={initialValues.email}
                 disabled
               />
             </Label>
-          
+            {formik.touched.email && formik.errors.email ? (
+              <div className="text-red-600">{formik.errors.email}</div>
+            ) : null}
+          </div>
+          <div className="mb-4">
+            <Label>
+              <span>Password</span>
+              <Input
+                type="password"
+                className="mt-1 password-input"
+                rows="3"
+                placeholder="********"
+                name="password"
+                value={initialValues.password}
+                disabled
+              />
+            </Label>
+            {formik.touched.password && formik.errors.password ? (
+              <div className="text-red-600">{formik.errors.password}</div>
+            ) : null}
+          </div>
+          <div className="mb-4">
+            <Label>
+              <span>Mobile Number</span>
+              <Textarea
+                className="mt-1"
+                rows="3"
+                placeholder="0000000000"
+                name="phone_number"
+                value={formik.values.phone_number}
+                onChange={formik.handleChange}
+              />
+            </Label>
+            {formik.touched.phone_number && formik.errors.phone_number ? (
+              <div className="text-red-600">{formik.errors.phone_number}</div>
+            ) : null}
+          </div>
+          <div className="mb-4">
+            <Label>
+              <span>Address</span>
+              <Textarea
+                className="mt-1"
+                rows="3"
+                placeholder=""
+                name="address"
+                value={formik.values.address}
+                onChange={formik.handleChange}
+              />
+            </Label>
+            {formik.touched.address && formik.errors.address ? (
+              <div className="text-red-600">{formik.errors.address}</div>
+            ) : null}
           </div>
 
-          {/* File Upload */}
-          <div className="mb-4 relative">
+           {/* File Upload */}
+           <div className="mb-4 relative">
             <Label>
               <span className="text-gray-700 dark:text-gray-400">Document Upload</span>
               {/* Hidden file input */}
@@ -156,28 +224,26 @@ function EditProject() {
               <div className="py-2 px-4 text-gray-500">
                 <span className="text-purple-600 border border-gray-300 rounded-md pl-2 pr-4">Choose file</span>
                 <span> </span>
-                {formik.values.file ? formik.values.file.name : fileName}
+                {formik.values.profile_image ? formik.values.profile_image.name : fileName}
               
               </div>
             </div>
             </Label>
-            {formik.touched.file && formik.errors.file ? (
+            {formik.touched.profile_image && formik.errors.profile_image ? (
               <div className="text-red-600">{formik.errors.file}</div>
             ) : null}
           </div>
 
-
-          {/* Submit Button */}
           <div className="mt-6">
             <Button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               disabled={formik.isSubmitting}
+              onClick={handleSubmit}
             >
               Submit
             </Button>
           </div>
-          <Modals isOpen={showSuccessModal} onClose={closeSuccessModal} message={modalMessage} />
         </form>
       </div>
     </>

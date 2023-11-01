@@ -18,6 +18,9 @@ function MentorsList() {
   const resultsPerPage = 10;
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
+  const [dropdownDisabled, setDropdownDisabled] = useState(false);
+
+
 
   // Function to fetch data from the API
   const fetchData = async () => {
@@ -66,17 +69,53 @@ function MentorsList() {
     }
   };
 
+
+  const handleStatusChange = async (e, project) => {
+    const selectedStatus = e.target.value;
+    if (selectedStatus === 'Approved') {
+      project.status = 1;
+    }
+    
+
+    if (selectedStatus === 'Approved') {
+      try {
+        const token = localStorage.getItem('token');
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        await axios.patch(
+          `${apiUrl}/api/v1/admin/update-mentor/${project._id}`,
+          { status: 1 }, // 1 is Approved
+          { headers }
+        );
+
+        // // Update data 
+        setDataTable((prevData) =>
+          prevData.map((p) =>
+            p._id === project._id ? { ...p, status: 1 } : p
+          )
+        );
+      } catch (error) {
+        console.error('Error updating status:', error);
+      }
+    }
+  };
   
   const handleEditClick = async (project) => {
     
-    localStorage.setItem("projectName",project.name);
-    localStorage.setItem("projectDescription",project.description);
-    localStorage.setItem("fileUrl",project.file_url);
+    localStorage.setItem("mentor_name",project.mentor_name);
+    localStorage.setItem("email",project.email);
+    localStorage.setItem("phone_number",project.phone_number);
+    localStorage.setItem("address",project.address);
+    localStorage.setItem("password",project.password);
+    localStorage.setItem("profile_image",project.profile_image);
   
     history.push(`/app/admin/mentors-edit-form/${project._id}`)
   };
   
   
+
   
 
 
@@ -120,10 +159,19 @@ function MentorsList() {
                 <TableCell>
                   <span className="text-sm">{project.email}</span>
                 </TableCell>
+                
                 <TableCell>
-                  <Badge type={project.status}>-</Badge>  
-                  {/* type={user.status} */}
+                  <select
+                    className="font-semibold text-sm"
+                    value={project.status === 1 ? 'Approved' : 'Pending'}
+                    onChange={(e) => handleStatusChange(e, project)}
+                    disabled={project.status === 1}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                  </select>
                 </TableCell>
+             
                 <TableCell>
                   <span className="text-sm">{new Date(project.created_at).toLocaleDateString()}</span>
                 </TableCell>
