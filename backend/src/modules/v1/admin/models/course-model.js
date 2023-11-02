@@ -11,6 +11,7 @@ const { Schema, ObjectId } = mongoose;
 const CourseSchema = new Schema({
     instructor: {
       type: ObjectId,
+      required:true
     },
     description: {
       type: String,

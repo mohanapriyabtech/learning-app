@@ -18,7 +18,7 @@ function MentorsList() {
   const resultsPerPage = 10;
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  const [dropdownDisabled, setDropdownDisabled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
 
 
@@ -39,8 +39,34 @@ function MentorsList() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+      fetchData();
+     
+    if (searchQuery) {
+      fetchDataWithSearch();
+    }
+  }, [searchQuery]); 
+  
+  
+  
+  const fetchDataWithSearch = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const response = await axios.get(
+        `${apiUrl}/api/v1/admin/search-mentor?mentor=${searchQuery}`,
+        { headers }
+      );
+      setDataTable(response.data.data);
+      setTotalResults(response.data.data.length);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+  
+  
+
 
   const onPageChange = (page) => {
     setPage(page);
@@ -74,6 +100,8 @@ function MentorsList() {
     const selectedStatus = e.target.value;
     if (selectedStatus === 'Approved') {
       project.status = 1;
+    } else {
+      project.status = 0;
     }
     
 
@@ -84,8 +112,7 @@ function MentorsList() {
           Authorization: `Bearer ${token}`,
         };
 
-        await axios.patch(
-          `${apiUrl}/api/v1/admin/update-mentor/${project._id}`,
+        await axios.patch(`${apiUrl}/api/v1/mentor/update-mentor/${project._id}`,
           { status: 1 }, // 1 is Approved
           { headers }
         );
@@ -99,7 +126,31 @@ function MentorsList() {
       } catch (error) {
         console.error('Error updating status:', error);
       }
+
+    } else {
+
+      try {
+        const token = localStorage.getItem('token');
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        await axios.patch(`${apiUrl}/api/v1/mentor/update-mentor/${project._id}`,
+          { status: 0 }, // 1 is Approved
+          { headers }
+        );
+
+        // // Update data 
+        setDataTable((prevData) =>
+          prevData.map((p) =>
+            p._id === project._id ? { ...p, status: 0 } : p
+          )
+        );
+      } catch (error) {
+        console.error('Error updating status:', error);
+      }
     }
+
   };
   
   const handleEditClick = async (project) => {
@@ -123,8 +174,15 @@ function MentorsList() {
     <>
       <PageTitle>Mentors</PageTitle>
 
-      <div className="px-6 my-6 flex justify-end">
-      <Button onClick={handleCreateProjectClick}>
+      <div className="px-6 my-6 flex justify-end gap-3">
+        <input
+            type="text"
+            className="input-sm border border-black-500 rounded-lg p-2"
+            placeholder="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        <Button onClick={handleCreateProjectClick}>
           Create Mentor
           <span className="ml-2" aria-hidden="true">
             +
@@ -165,7 +223,7 @@ function MentorsList() {
                     className="font-semibold text-sm"
                     value={project.status === 1 ? 'Approved' : 'Pending'}
                     onChange={(e) => handleStatusChange(e, project)}
-                    disabled={project.status === 1}
+                    // disabled={project.status === 1}
                   >
                     <option value="Pending">Pending</option>
                     <option value="Approved">Approved</option>

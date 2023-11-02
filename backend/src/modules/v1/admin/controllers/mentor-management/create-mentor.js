@@ -19,7 +19,7 @@ class MentorCreateController {
     async create(req, res) {
 
         try {
-            console.log("---")
+            req.body.password = encrypt(req.body.password)
             const result = await Mentor.create(req.body)
             return responseHandler.successResponse(res, result, "Mentor created successfully", 200);
 

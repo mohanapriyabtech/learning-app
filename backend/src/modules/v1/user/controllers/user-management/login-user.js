@@ -24,6 +24,7 @@ class LoginController {
                         return responseHandler.errorResponse(res, {}, "You have been blocked by admin", 400);
                     } else {
                         const session = await createSession(user)
+                        user.password = 0
                         return responseHandler.successResponse(res, { user, session }, "User logged in successfull", 200);
                     }
                 } else {

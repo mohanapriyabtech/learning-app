@@ -34,6 +34,8 @@ import updateCourseController from '../controllers/course-management/update-cour
 import updateMentor from '../../mentor/controllers/mentor-management/update-mentor';
 import searchCourseController from '../controllers/course-management/search-course-controller';
 import adminAuthentication from '../authentication/admin-authentication';
+import searchMentor from '../controllers/mentor-management/search-mentor';
+import mentorValidator from '../validators/mentor-validator';
 
 const adminRouter = express.Router();
 
@@ -67,8 +69,9 @@ adminRouter.patch('/unblock-user/:id', paramsValidator.validate, unblockUser.upd
 adminRouter.get('/list-mentor', listMentor.list);
 adminRouter.get('/get-mentor/:id', paramsValidator.validate, getMentorById.get)
 adminRouter.delete('/delete-mentor/:id', paramsValidator.validate, deleteMentor.delete);
-adminRouter.post('/create-mentor', createMentor.create);
-adminRouter.patch('/update-mentor/:id',updateMentor.update);
+adminRouter.post('/create-mentor',mentorValidator.signup,createMentor.create);
+adminRouter.patch('/update-mentor/:id',mentorValidator.update,updateMentor.update);
+adminRouter.get('/search-mentor',searchMentor.search);
 
 //course management
 adminRouter.get('/list-course', listCourse.list);

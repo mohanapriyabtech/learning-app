@@ -25,7 +25,7 @@ const MentorSchema = new Schema({
   },
   phone_number: {
     type: String,
-    required: true,
+    required: true
   },
   address: {
     type: String,

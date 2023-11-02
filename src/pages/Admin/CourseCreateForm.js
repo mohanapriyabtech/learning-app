@@ -165,7 +165,7 @@ const handleFileChange = (e) => {
             <Label>
             <span>Instructor</span>
             <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                className="mt-1 block w-35 h-10 rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
                 name="instructor" 
                 value={formik.values.instructor}
                 onChange={formik.handleChange}

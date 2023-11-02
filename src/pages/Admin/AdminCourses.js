@@ -81,6 +81,7 @@ const fetchDataWithSearch = async () => {
   } catch (error) {
     setError(error.message);
   }
+  
 };
 
 
@@ -145,9 +146,10 @@ const fetchDataWithSearch = async () => {
   
   const handleEditClick = async (project) => {
     
-    localStorage.setItem("projectName",project.name);
-    localStorage.setItem("projectDescription",project.description);
-    localStorage.setItem("fileUrl",project.file_url);
+    localStorage.setItem("description",project.description);
+    localStorage.setItem("instructor",project.instructor);
+    localStorage.setItem("course",project.course);
+    localStorage.setItem("cover_image",project.cover_image);
   
     history.push(`/app/admin/edit-course/${project._id}`)
   };

@@ -65,19 +65,24 @@ function EditProject() {
       }
     
       // form_data.append('file', formData.file); 
-      const file_data = new FormData();
-      file_data.append('media', formik.values.profile_image);
-      file_data.append('service', 'mentors');
-  
-      const fileResponse = await axios.post(`${apiUrl}/api/v1/file-upload/upload`, file_data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-  
-      console.log('File upload API response:', fileResponse.data.data);
-  
-      form_data.append('profile_image', fileResponse.data.data[0].name);
+
+      if (formik.values.profile_image) {
+
+        const file_data = new FormData();
+        file_data.append('media', formik.values.profile_image);
+        file_data.append('service', 'mentors');
+    
+        const fileResponse = await axios.post(`${apiUrl}/api/v1/file-upload/upload`, file_data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+    
+        console.log('File upload API response:', fileResponse.data.data);
+    
+        form_data.append('profile_image', fileResponse.data.data[0].name);
+      }
+      
 
       // if (formik.values.phone_number !== initialValues.phone_number) {
       //   form_data.append('phone_number', formik.values.phone_number);
@@ -112,7 +117,7 @@ function EditProject() {
 
   return (
     <>
-      <PageTitle>Edit Project</PageTitle>
+      <PageTitle>Update Mentor</PageTitle>
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style={{ width: '50%' }}>
         <form onSubmit={formik.handleSubmit}>

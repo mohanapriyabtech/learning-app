@@ -1,49 +1,61 @@
-import { Mentor } from '../models/mentor-model';
 import passport from 'passport';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import { Strategy } from 'passport-strategy';
+
 import { responseHandler } from '../../../../utils/response-handler';
-import { Session } from '../models/session-model';
+import { Session } from '../../admin/models/session-model';
+import { Mentor } from '../models/mentor-model';
+
+class CustomMentorAuthStrategy extends Strategy {
+    constructor() {
+        super();
+    }
+
+    async authenticate(req, options) {
+        const token = req.headers.authorization;
+
+        if (!token) {
+            return this.fail('Missing authentication token', 401);
+        }
+
+        const sessionToken = token.split(' ')[1];
+
+        try {
+            const result = await Session.findOne({ session_token: sessionToken, status: 1 });
+
+            if (!result) {
+                return this.fail('Invalid session token', 401);
+            }
+
+            const mentor = await Mentor.findById(result.user_id);
+
+            if (!mentor) {
+                return this.fail('Access denied', 401);
+            }
+
+            this.success(mentor);
+
+        } catch (error) {
+            return this.error('Internal server error', error);
+        }
+    }
+}
+
+// Create an instance of the custom strategy and use it with Passport
+const customMentorAuthStrategy = new CustomMentorAuthStrategy();
 
 class MentorAuthentication {
     constructor() {
-        this.secretKey = process.env.SECRET_KEY;
-
-        // Configure Passport to use JWT strategy
-        const opts = {
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: this.secretKey,
-        };
-
-        passport.use('mentor-jwt', new JwtStrategy(opts, async (jwtPayload, done) => {
-            try {
-                const mentor = await Mentor.findById(jwtPayload.id);
-                if (mentor) {
-                    return done(null, mentor);
-                } else {
-                    return done(null, false);
-                    // or you could create a new account
-                }
-            } catch (err) {
-                return done(err, false);
-            }
-        }));
+        // Use the custom strategy instead of JWT
+        passport.use('mentor-custom', customMentorAuthStrategy);
     }
 
     async check(req, res, next) {
-
-        const token = req.headers.authorization;
-        const session = await Session.findOne({ session_token: token.split(" ")[1], status: 1 }).exec();
-
-        if (!session) {
-            return responseHandler.errorResponse(res, {}, "Invalid or expired session token", 401);
-        }
-
-        passport.authenticate('mentor-jwt', { session: false }, (err, user) => {
+        passport.authenticate('mentor-custom', { session: false }, (err, user) => {
             if (err) {
-                return next(err);
+                return responseHandler.errorResponse(res, err);
             }
             if (!user) {
-                return responseHandler.errorResponse(res, {}, 'authentication failed', 401);
+                return responseHandler.errorResponse(res, {}, 'Authentication failed', 401);
             }
 
             req.user = user;

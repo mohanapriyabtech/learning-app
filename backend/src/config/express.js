@@ -49,7 +49,7 @@ export default class Express {
         }));
         this.app.use(limiter)
         // error handling middleware
-        this.app.use(function (err, req, res, next) {
+        // this.app.use(function (err, req, res, next) {
             // if (err.message === 'Not allowed by CORS') {
             //     res.status(403).json({
             //         status: false,
@@ -59,7 +59,7 @@ export default class Express {
             // } else {
             //     next(err);
             // }
-        });
+        // });
         this.app.use('/images', this.express.static('/home/sparkout/Documents/projects/learning-app/backend/var/www/html/upload'));
 
     }

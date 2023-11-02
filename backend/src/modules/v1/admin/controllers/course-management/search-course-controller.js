@@ -17,9 +17,7 @@ class SearchCourseController {
 
         try {
             const { course } = req.query;
-            const search = {
-                status: 1, 
-              };
+            const search = {};
               
               if (course) {
                 search.$or = [

@@ -19,6 +19,7 @@ import createCourseController from '../../mentor/controllers/course-management/c
 import updateCourseController from '../../admin/controllers/course-management/update-course-controller';
 import listMentor from '../../mentor/controllers/mentor-management/list-mentor';
 import getMentorById from '../../mentor/controllers/mentor-management/get-mentor-by-id';
+import searchCourseController from '../../admin/controllers/course-management/search-course-controller';
 
 
 const userRouter = express.Router();
@@ -47,6 +48,7 @@ userRouter.get('/get-course/:id', paramsValidator.validate, getCourseById.get);
 userRouter.delete('/delete-course/:id', paramsValidator.validate,deleteCourseById.delete);
 userRouter.post('/create-course', createCourseController.create);
 userRouter.post('/edit-course/:id', updateCourseController.update);
+userRouter.get('/search-course',searchCourseController.search);
 
 //mentor management
 

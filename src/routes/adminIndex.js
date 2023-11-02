@@ -13,6 +13,7 @@ const Courses = lazy(() => import('../pages/Admin/AdminCourses'))
 const Mentors = lazy(()  => import('../pages/Admin/MentorsList'))
 const MentorsCreateForm = lazy(()  => import('../pages/Admin/MentorCreateForm'))
 const MentorsEditForm = lazy(() => import('../pages/Admin/MentorEditForm'))
+const AdminCourseEdit = lazy(() => import('../pages/Admin/CourseEditForm'))
 const Page404 = lazy(() => import('../pages/404'))
 const Blank = lazy(() => import('../pages/Blank'))
 const uploadPage = lazy(()=> import('../pages/uploadPage'))
@@ -42,7 +43,7 @@ const routes = [
   },
   {
     path: '/edit-course/:id',
-    component: EditCourse,
+    component: AdminCourseEdit,
   },
   {
     path: '/cards',

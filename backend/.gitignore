@@ -111,3 +111,5 @@ var/
 dbBackUp/
 backup/
 thumbnail/
+
+var/

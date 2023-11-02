@@ -2,7 +2,7 @@
 import { decrypt } from "../../../../../utils/encrypt";
 import { responseHandler } from "../../../../../utils/response-handler";
 import { Course} from "../../../admin/models/course-model";
-import { v4 as uuidv4 } from 'uuid';
+import createNotificationController from "../../../Notification/controller/create-notification-controller";
 
 
 
@@ -23,8 +23,9 @@ class courseCreateController {
     async create(req, res) {
 
         try {
-
+             
             const result = await Course.create(req.body)
+            await createNotificationController.store("course", result, "all","Admin", "course created", "Admin" ,"User", 1)
             return responseHandler.successResponse(res, result, "Course created successfully", 200);
 
         } catch (err) {
