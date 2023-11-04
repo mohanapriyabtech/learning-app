@@ -187,7 +187,12 @@ function EditCourse() {
                 onChange={formik.handleChange}
               >
                 
-                <option value="">Select an instructor</option>
+                {formik.values.instructor ? (
+                   
+                  <option value={formik.values.instructor}>{formik.values.instructor}</option>
+                ) : (
+                  <option value="">Select an instructor</option>
+                )}
 
                 {instructors.map((instructor) => (
                   <option key={instructor._id} value={instructor._id} style={{ height: '50px' }} >

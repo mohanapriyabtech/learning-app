@@ -74,10 +74,10 @@ adminRouter.patch('/update-mentor/:id',mentorValidator.update,updateMentor.updat
 adminRouter.get('/search-mentor',searchMentor.search);
 
 //course management
+adminRouter.post('/create-course', createCourseController.create);
 adminRouter.get('/list-course', listCourse.list);
 adminRouter.get('/get-course/:id', paramsValidator.validate, getCourseById.get);
 adminRouter.delete('/delete-course/:id', paramsValidator.validate,deleteCourseById.delete);
-adminRouter.post('/create-course', createCourseController.create);
 adminRouter.patch('/edit-course/:id', updateCourseController.update);
 adminRouter.get('/search-course',searchCourseController.search);
 

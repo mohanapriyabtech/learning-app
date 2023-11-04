@@ -15,14 +15,8 @@ const NotificationSchema = new Schema({
         enum: ['course', 'mentor'],
         required: [true, 'service is required']
     },
-    sender: {
-        type: String
-    },
-
-    receiver: {
-        type: String
-    },
-
+    sender: String,
+    receiver: String,
     message: {
         type: String,
         required: [true, 'message is required']

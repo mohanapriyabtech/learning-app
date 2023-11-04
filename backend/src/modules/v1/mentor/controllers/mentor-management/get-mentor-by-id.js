@@ -9,8 +9,8 @@ class GetMentorController {
     }
 
     /**
-     * @description   API to get project by ID
-     * @param {*} req /api/v1/admin/get-project/63a56af6af119c87cca09b1d
+     * @description   API to get mentor by ID
+     * @param {*} req /api/v1/admin/get-mentor/63a56af6af119c87cca09b1d
      * @param {*} res 
      */
 

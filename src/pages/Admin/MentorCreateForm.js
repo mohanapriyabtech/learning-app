@@ -38,13 +38,13 @@ function Forms() {
     profile_image: null,
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value,
+  //   });
+  // };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -161,8 +161,8 @@ function Forms() {
             
             {formik.touched.password && formik.errors.password ? (
               <div className="text-red-600">{formik.errors.password}</div>
-            ) : null}
-          </div>
+              ) : null}
+              </div>
           <div className="mb-4">
             <Label>
               <span>Mobile Number</span>

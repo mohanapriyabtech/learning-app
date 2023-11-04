@@ -4,7 +4,7 @@ import { responseHandler } from '../../../../utils/response-handler';
 class MentorValidator {
     constructor() {
         this.schemas = {
-            create: Joi.object({
+            signup: Joi.object({
                 mentor_name: Joi.string().required().error(new Error("Name is required")),
                 email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required().error(new Error("Email is required")),
                 
@@ -22,10 +22,10 @@ class MentorValidator {
                 profile_image: Joi.string(),
             }),
 
-            // login: Joi.object({
-            //     email: Joi.string().required().error(new Error("Email is required")),
-            //     password: Joi.string().required().error(new Error("Password is required")),
-            // }),
+            login: Joi.object({
+                email: Joi.string().required().error(new Error("Email is required")),
+                password: Joi.string().required().error(new Error("Password is required")),
+            }),
 
             update: Joi.object({
                 mentor_name: Joi.string(),
@@ -55,7 +55,7 @@ class MentorValidator {
     };
 
     signup = this.validateAndNext('signup');
-    // login = this.validateAndNext('login');
+    login = this.validateAndNext('login');
     update = this.validateAndNext('update');
 }
 

@@ -8,6 +8,7 @@ const MentorLayout = lazy(() => import('./containers/MentorLayout'))
 const Login = lazy(() => import('./pages/Login'))
 const MentorLogin = lazy(() => import('./pages/Mentor/MentorLogin'))
 const CreateAccount = lazy(() => import('./pages/CreateAccount'))
+const MentorCreateAccount = lazy(() => import('./pages/Mentor/MentorSignup'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const AdminLogin = lazy(()=> import('./pages/Admin/AdminLogin'))
 const MentorSignup = lazy(()=> import('./pages/Mentor/MentorSignup'))
@@ -23,6 +24,7 @@ function App() {
        
           {/* <Route path="/login" component={Login} /> */}
           <Route path="/admin/create-account" component={CreateAccount} />
+          <Route path="/mentor/create-account" component={MentorCreateAccount} />
           <Route path="/forgot-password" component={ForgotPassword} />
 
           <Route path="/app/mentor/signup" component={MentorSignup} />

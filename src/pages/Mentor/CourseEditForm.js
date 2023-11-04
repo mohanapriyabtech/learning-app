@@ -25,11 +25,9 @@ function EditCourse() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [instructors, setInstructors] = useState([]);
+  const [instructorSelect,setInstructorSelect] = useState('');
 
-  const closeSuccessModal = () => {
-    setShowSuccessModal(false);
-    history.push('/app/projects');
-  };
+
 
   let { id } = useParams();
 
@@ -40,13 +38,16 @@ function EditCourse() {
     cover_image: null,
   };
 
- 
+  const instructorId = initialValues.instructor;
+  const updatedItems = instructors.filter(item => item._id !== instructorId);
+  console.log(instructorId,instructors,"inst")
 
   useEffect(() => {
     const fetchInstructors = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/api/v1/admin/list-mentor`);
+        const response = await axios.get(`${apiUrl}/api/v1/mentor/list-mentor`);
         const instructorData = response.data.data;
+        console.log(instructorData,"instrutors")
         setInstructors(instructorData);
         
       } catch (error) {
@@ -55,6 +56,22 @@ function EditCourse() {
     };
   
     fetchInstructors();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('mentor-token');
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    axios.get(`${apiUrl}/api/v1/mentor/get-mentor/${initialValues.instructor}`, { headers })
+      .then((response) => {
+        const data = response.data.data;
+        setInstructorSelect(data.mentor_name);
+      })
+      .catch((error) => {
+        console.error('Error fetching instructor data:', error);
+      });
   }, []);
 
   const handleSubmit = async (values) => {
@@ -99,8 +116,8 @@ function EditCourse() {
      
 
   
-      const token = localStorage.getItem("token");
-      const response = await axios.patch(`${apiUrl}/api/v1/admin/edit-course/${id}`, form_data, {
+      const token = localStorage.getItem("mentor-token");
+      const response = await axios.patch(`${apiUrl}/api/v1/mentor/edit-course/${id}`, form_data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -111,7 +128,7 @@ function EditCourse() {
         formik.resetForm();
         setModalMessage('Mentor updated successfully!');
         setShowSuccessModal(true);
-        history.push('/app/admin/mentors')
+        history.push('/app/mentor/courses')
       }
     } catch (error) {
       console.error('API error:', error);
@@ -123,7 +140,15 @@ function EditCourse() {
   };
 
   const fileName = localStorage.getItem('cover_image')
-
+  const token = localStorage.getItem("mentor-token");
+  //   const headers = {
+  //     Authorization: `Bearer ${token}`,
+  //   };
+  //   const response = axios.get(
+  //     `${apiUrl}/api/v1/mentor/get-mentor/${project.instructor}`,
+  //     { headers }
+  //   );
+  // const instructor = response.data.data.mentor_name
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -136,7 +161,7 @@ function EditCourse() {
       <PageTitle>Course Edit form</PageTitle>
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <form onSubmit={formik.onSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           {/* Name */}
           <div className="mb-4">
             <Label>
@@ -145,7 +170,7 @@ function EditCourse() {
                 className="mt-1"
                 placeholder=""
                 name="course"
-                value={initialValues.course}
+                value={formik.values.course}
                 onChange={formik.handleChange}
                 
               />
@@ -165,7 +190,7 @@ function EditCourse() {
                 rows="3"
                 placeholder="Enter a description."
                 name="description"
-                value={initialValues.description}
+                value={formik.values.description}
                 onChange={formik.handleChange}
                 // disabled
               />
@@ -179,20 +204,29 @@ function EditCourse() {
             <Label>
             <span>Instructor</span>
             <select
-                className="mt-1 block w-35 h-10 rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
-                name="instructor" 
-                value={initialValues.instructor}
+                className="mt-1 block w-40 h-10 rounded-md border-gray-300 shadow-sm focus-border-purple-400 focus-ring focus-ring-purple-200 focus-ring-opacity-50"
+                name="instructor"
+                value={formik.values.instructor} // Set the selected value
                 onChange={formik.handleChange}
               >
-                
+              {instructorSelect ? (
+                   
+                <option value={instructorSelect}>{instructorSelect}</option>
+                ) : (
                 <option value="">Select an instructor</option>
-
-                {instructors.map((instructor) => (
-                  <option key={instructor._id} value={instructor._id} style={{ height: '50px' }} >
+                )}
+              {updatedItems
+                .map(instructor => (
+                  <option
+                    key={instructor._id}
+                    value={instructor._id}
+                    // style={{ height: '50px' ,width:"50px"}}
+                  >
                     {instructor.mentor_name}
                   </option>
-                ))}
-                
+                ))
+              }
+
               </select>
             </Label>
             {formik.touched.instructor && formik.errors.instructor ? (
@@ -220,13 +254,14 @@ function EditCourse() {
                   </span>
                   <span> </span>
                   {formik.values.cover_image ? formik.values.cover_image.name : fileName}
+                  {/* Use formik.values.cover_image.name here */}
                 </div>
               </div>
             </Label>
             {formik.touched.cover_image && formik.errors.cover_image ? (
-              <div className="text-red-600">{formik.errors.cover_image}</div>
+            <div className="text-red-600">{formik.errors.cover_image}</div>
             ) : null}
-          </div>
+            </div>
 
           {/* Submit Button */}
           <div className="mt-6">
@@ -234,7 +269,6 @@ function EditCourse() {
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               disabled={formik.isSubmitting}
-              onClick={handleSubmit}
             >
               Submit
             </Button>

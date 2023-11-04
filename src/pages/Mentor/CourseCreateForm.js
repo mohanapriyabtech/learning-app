@@ -55,20 +55,7 @@ const handleFileChange = (e) => {
 };
 
 
-  const handleCourseSubmit= async() => {
-    try {
-      const response = await axios.get(`${apiUrl}/api/v1/admin/create-course`);
-      const instructorData = response.data.data;
-      setInstructors(instructorData);
-      history.push('/app/admin/course')
-      
-    } catch (error) {
-      console.error('Error fetching instructor data:', error);
-    }
-
-
-   
-  }
+ 
 
   const handleSubmit = async (values) => {
     try {
@@ -93,7 +80,7 @@ const handleFileChange = (e) => {
   
       form_data.append('cover_image', fileResponse.data.data[0].name);
   
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("mentor-token");
       const response = await axios.post(`${apiUrl}/api/v1/mentor/create-course`, form_data, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -225,7 +212,6 @@ const handleFileChange = (e) => {
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               disabled={formik.isSubmitting}
-              onClick= {handleCourseSubmit}
             >
               Submit
             </Button>

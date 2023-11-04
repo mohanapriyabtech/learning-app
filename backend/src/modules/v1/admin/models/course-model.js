@@ -20,6 +20,7 @@ const CourseSchema = new Schema({
     course: {
       type: String,
       required: true,
+      unique: true
     },
     cover_image: {
       type: String
@@ -29,7 +30,7 @@ const CourseSchema = new Schema({
     },
     status: {
       type: Number,
-      default: 0
+      default: false   //0  set for false
     },
     created_at: {
       type: Date,

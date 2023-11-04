@@ -51,8 +51,12 @@ const routes = [
     component: Charts,
   },
   {
-    path: '/courses-create-form',
+    path: '/create-course',
     component: CoursesCreateForm,
+  },
+  {
+    path: '/edit-course',
+    component: CoursesEditForm,
   },
   {
     path: '/courses',

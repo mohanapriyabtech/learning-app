@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
 import { Session } from '../modules/v1/admin/models/session-model';
 
 const ENCRYPTION_KEY = process.env.SC_ENCRYPTION_KEY || 'agdjhjdhfjdjshkjgfghnbjkggnhhnbv'; // Must be 256 bits (32 characters)
@@ -17,13 +16,12 @@ export function encrypt(text, encryptionKey = ENCRYPTION_KEY) {
 
 export function decrypt(text, encryptionKey = ENCRYPTION_KEY) {
   try {
-   
     let textParts = text.includes(':') ? text.split(':') : [];
     let iv = Buffer.from(textParts.shift() || '', 'binary');
-    console.log(textParts,iv,"----------")
     let encryptedText = Buffer.from(textParts.join(':'), 'hex');
     let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey), iv);
     let decrypted = decipher.update(encryptedText);
+
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
   }
@@ -34,72 +32,68 @@ export function decrypt(text, encryptionKey = ENCRYPTION_KEY) {
   }
 }
 
-export const createSession = (user, device) => {
-  return new Promise((resolve, reject) => {
-    let tokenParams = {
+
+export const createSession = async (user, device) => {
+  try {
+    const tokenParams = {
       id: user._id,
       email: user.email,
+      number: user.phone_number,
       name: user.name,
       time: new Date().valueOf()
-    }
+    };
+
     if (device) {
-      tokenParams.device_information = device
+      tokenParams.device_information = device;
     }
-    checkSession(user._id)
+
+    await checkSession(user._id);
+
     const sessionParam = {
-      session_token: jwt.sign(tokenParams, process.env.SECRET_KEY),
+      session_token: encrypt(JSON.stringify(tokenParams)),
       user_id: user._id,
     };
 
-    const session = new Session(sessionParam);
-    session.save()
-      .then(_session => {
-        resolve(_session);
-      })
-      .catch(error => {
-        reject(error.message);
-      });
-  });
-}
+    const session = await new Session(sessionParam).save();
 
-/**
-* update user details
-* @returns Promise<error | user>
-*/
-export const logoutSession = (session) => {
-  return new Promise(async (resolve, reject) => {
-    session = session.split(' ')
-    Session.findOneAndDelete({ session_token: session })
-      .then(session => {
-        resolve(session);
-      })
-      .catch(error => {
-        reject(error.message);
-      });
-  });
-}
+    return session;
+  } catch (error) {
+    throw error.message;
+  }
+};
 
 
 /**
-* check user session
-* @returns Promise<error | user>
-*/
-export const checkSession = (id) => {
-  return new Promise((resolve, reject) => {
-    try {
-      Session.find({ user_id: id })
-        .then(async result => {
-          if (result.length > 50) {
-            await Session.deleteMany({ user_id: id })
-          }
-          resolve('sucess')
-        })
-        .catch(error => {
-          reject(error.message);
-        });
+ * Log out a session
+ * @param {string} session - The session token to be logged out
+ * @returns {Promise<error | session>}
+ */
+export const logoutSession = async (session) => {
+  try {
+    session = session.split(' ');
+    const deletedSession = await Session.findOneAndDelete({ session_token: session });
+    return deletedSession;
+  } catch (error) {
+    throw error.message;
+  }
+};
+
+
+/**
+ * Check user session and delete sessions if there are more than 50
+ * @param {string} id - The user's ID to check sessions for
+ * @returns {Promise<string | Error>} A success message or an error
+ */
+export const checkSession = async (id) => {
+  try {
+    const result = await Session.find({ user_id: id });
+
+    if (result.length > 50) {
+      await Session.deleteMany({ user_id: id });
     }
-    catch (err) {
-      reject(err)
-    }
-  })
-}
+
+    return 'success';
+  } catch (error) {
+    throw error.message;
+  }
+};

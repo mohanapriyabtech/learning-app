@@ -57,30 +57,14 @@ const handleFileChange = (e) => {
 };
 
 
-  const handleCourseSubmit= async() => {
-    try {
-      const response = await axios.get(`${apiUrl}/api/v1/admin/create-course`);
-      const instructorData = response.data.data;
-      setInstructors(instructorData);
-      history.push('/app/admin/course')
-      // showToast()
-      
-    } catch (error) {
-      console.error('Error fetching instructor data:', error);
-    }
-
-
-   
-  }
-
   const handleSubmit = async (values) => {
     try {
       
       const form_data = new FormData();
     
-      form_data.append('description', values.description);
-      form_data.append('course', values.course);
-      form_data.append('instructor', values.instructor);
+      form_data.append('description', formik.values.description);
+      form_data.append('course',formik.values.course);
+      form_data.append('instructor',formik.values.instructor);
   
       const file_data = new FormData();
       file_data.append('media', formik.values.cover_image);
@@ -95,10 +79,10 @@ const handleFileChange = (e) => {
       console.log('File upload API response:', fileResponse.data.data);
   
       form_data.append('cover_image', fileResponse.data.data[0].name);
-      form_data.append('cover_image_url', fileResponse.data.data[0].url);
+      // form_data.append('cover_image_url', fileResponse.data.data[0].url);
   
       const token = localStorage.getItem("token");
-      const response = await axios.post(`${apiUrl}/api/v1/mentor/create-course`, form_data, {
+      const response = await axios.post(`${apiUrl}/api/v1/admin/create-course`, form_data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -225,14 +209,14 @@ const handleFileChange = (e) => {
           </div>
 
           <div className="mt-6">
-            <Button
-              type="submit"
-              className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              disabled={formik.isSubmitting}
-              onClick= {handleCourseSubmit}
-            >
-              Submit
-            </Button>
+          <Button
+            type="submit"
+            className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active-bg-purple-600 hover-bg-purple-700 focus-outline-none focus-shadow-outline-purple"
+            disabled={formik.isSubmitting}
+          >
+            Submit
+          </Button>
+
           </div>
         </form>
       </div>

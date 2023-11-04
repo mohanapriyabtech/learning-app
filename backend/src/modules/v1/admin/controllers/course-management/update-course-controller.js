@@ -21,8 +21,6 @@ class UpdateCourseController {
     async update(req, res) {
 
         try {
-            const file = req.body.file;
-
             const result = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec();
 
             if (result) {

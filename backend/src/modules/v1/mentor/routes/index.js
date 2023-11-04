@@ -19,6 +19,9 @@ import signupMentor from '../controllers/mentor-management/signup-mentor';
 import loginMentor from '../controllers/mentor-management/login-mentor';
 import updateMentor from '../controllers/mentor-management/update-mentor';
 import mentorAuthentication from '../authentication/mentor-authentication';
+import mentorValidator from '../validators/mentor-validator';
+import searchCourseController from '../../admin/controllers/course-management/search-course-controller';
+import updateCourseController from '../../admin/controllers/course-management/update-course-controller';
 
 
 const mentorRouter = express.Router();
@@ -29,7 +32,7 @@ const mentorRouter = express.Router();
  */
 
 //mentor management
-mentorRouter.post('/signup', signupMentor.create);
+mentorRouter.post('/signup',mentorValidator.signup,signupMentor.create);
 mentorRouter.post('/login', loginMentor.get);
 mentorRouter.get('/list-mentor', listMentor.list);
 mentorRouter.get('/get-mentor/:id', paramsValidator.validate, getMentorById.get)
@@ -41,6 +44,8 @@ mentorRouter.get('/list-course', listCourse.list);
 mentorRouter.get('/get-course/:id', paramsValidator.validate, getCourseById.get);
 mentorRouter.delete('/delete-course/:id', paramsValidator.validate,deleteCourseById.delete);
 mentorRouter.post('/create-course', mentorAuthentication.check,createCourseController.create);
+mentorRouter.get('/search-course',searchCourseController.search);
+mentorRouter.patch('/edit-course/:id',updateCourseController.update);
 
 //lesson management
 mentorRouter.get('/list-lesson', listLesson.list);

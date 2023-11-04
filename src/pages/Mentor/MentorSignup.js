@@ -8,48 +8,56 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 const SignupSchema = Yup.object().shape({
-  name: Yup.string()
-    .max(15, 'Must be 15 characters or less')
-    .required('Required'),
-  email: Yup.string()
-    .email('Invalid email address')
-    .required('Required'),
-  password: Yup.string()
-    .min(3, 'Password length should be minimum 3')
-    .max(15, 'Password length should be maximum 15')
-    .required('Required'),
-});
+  mentor_name: Yup.string().required('Name is required'),
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters long')
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        'Password must contain at least one letter, one number, and one special character'
+      ),
+    phone_number: Yup.string()
+      .required('Phone number is required')
+      .matches(/^\d{10}$/, 'Phone number must be a 10-digit number'),
+  })
 
-function Login() {
+function Signup() {
   const history = useHistory();
   const [formData, setFormData] = useState({
+    mentor_name: '',
     email: '',
-    password: '',
-    confirmPassword: '',
+    phone_number: '',
+    password: ''
   });
 
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
-  const handleSubmit = async (values) => {
-    // e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("submit")
     try {
-      const response = await axios.post('http://localhost:4000/api/v1/mentor/signup', values);
+      const form_data = new FormData();
+      form_data.append('mentor_name', formik.values.mentor_name);
+      form_data.append('email', formik.values.email);
+      form_data.append('phone_number', formik.values.phone_number);
+      form_data.append('password', formik.values.password);
+      const token = localStorage.getItem("token");
+      const response = await axios.post('http://localhost:4000/api/v1/mentor/signup', form_data,{
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        },
+      });
 
      
       if (response.status === 200) {
         setSuccessMessage('Registration successful.');
         setError(null);
         formik.resetForm();
-        history.push("/mentor/dashboard/login")
+        history.push("/app/mentor/dashboard")
 
         // Redirect to the login page
         // history.push('/login');
@@ -64,13 +72,9 @@ function Login() {
   };
 
   const formik = useFormik({
-    initialValues: {
-      name: '',
-      email: '',
-      password: '',
-    },
+    initialValues:formData,
     validationSchema: SignupSchema,
-    onSubmit: handleSubmit, // Reference the handleSubmit function here
+    onSubmit: handleSubmit, 
   });
 
   return (
@@ -103,11 +107,12 @@ function Login() {
                     className="mt-1"
                     placeholder="John"
                     type="text"
-                    name="name"
-                    {...formik.getFieldProps('name')}
+                    name="mentor_name"
+                    value={formik.values.mentor_name}
+                    onChange={formik.handleChange}
                   />
-                  {formik.touched.name && formik.errors.name ? (
-                    <div className="text-red-600">{formik.errors.name}</div>
+                  {formik.touched.mentor_name && formik.errors.mentor_name ? (
+                    <div className="text-red-600">{formik.errors.mentor_name}</div>
                   ) : null}
                 </Label>
                 <Label>
@@ -117,7 +122,8 @@ function Login() {
                     type="email"
                     placeholder="john@doe.com"
                     name="email"
-                    {...formik.getFieldProps('email')}
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
                   />
                   {formik.touched.email && formik.errors.email ? (
                     <div className="text-red-600">{formik.errors.email}</div>
@@ -130,12 +136,27 @@ function Login() {
                     placeholder="***************"
                     type="password"
                     name="password"
-                    {...formik.getFieldProps('password')}
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
                   />
                   {formik.touched.password && formik.errors.password ? (
                     <div className="text-red-600">{formik.errors.password}</div>
                   ) : null}
                 </Label>
+                <Label className="mt-4">
+                  <span>Mobile Number</span>
+                  <Input
+                    className="mt-1"
+                    placeholder="0000000000"
+                    name="phone_number"
+                    value={formik.values.phone_number}
+                    onChange={formik.handleChange}
+                  />
+                  {formik.touched.phone_number && formik.errors.phone_number ? (
+                    <div className="text-red-600">{formik.errors.phone_number}</div>
+                  ) : null}
+                </Label>
+
                 <Label className="mt-6" check>
                   <Input type="checkbox" {...formik.getFieldProps('agree')} />
                   <span className="ml-2">
@@ -143,7 +164,7 @@ function Login() {
                   </span>
                 </Label>
 
-                <Button type="submit" block className="mt-4">
+                <Button type="submit" block className="mt-4"onClick={handleSubmit} >
                   Create account
                 </Button>
               </form>
@@ -164,7 +185,7 @@ function Login() {
               <p className="mt-4">
                 <Link
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/login"
+                  to="/mentor/dashboard/login"
                 >
                   Already have an account? Login
                 </Link>
@@ -177,4 +198,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Signup

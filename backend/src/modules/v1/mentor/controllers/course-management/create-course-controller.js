@@ -23,9 +23,11 @@ class courseCreateController {
     async create(req, res) {
 
         try {
-             
+            req.headers.authorization = req.headers.authorization.split(' ')[1];
+            const senderId = JSON.parse(decrypt(req.headers.authorization))
+            req.body.instructor = senderId.id
             const result = await Course.create(req.body)
-            await createNotificationController.store("course", result, "all","Admin", "course created", "Admin" ,"User", 1)
+            await createNotificationController.store("course", result, "all","Admin", "course created", "admin" ,"user", 1)
             return responseHandler.successResponse(res, result, "Course created successfully", 200);
 
         } catch (err) {
