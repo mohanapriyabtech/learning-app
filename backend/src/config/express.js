@@ -38,7 +38,7 @@ export default class Express {
         this.app = new express();
         // sanitize request data
         this.app.use(xss());
-        this.app.use(cors(corsOptions));
+        this.app.use(cors("*"));
         // parse urlencoded request body
         this.app.use(this.express.urlencoded({ limit: '50mb', extended: true }));
         // parse response body
