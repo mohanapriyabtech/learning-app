@@ -22,7 +22,7 @@ class SearchmentorController {
               if (mentor) {
                 search.$or = [
                   { mentor_name: { $regex: new RegExp(mentor, 'i') } },
-                  { email: { $regex: new RegExp(mentor, 'i') } },
+                //   { email: { $regex: new RegExp(mentor, 'i') } },
                 ];
               }
 
@@ -30,7 +30,7 @@ class SearchmentorController {
             if (result.length !== 0) {
                 return responseHandler.successResponse(res, result, 'mentor list retrived successfully');
             } else {
-                return responseHandler.successResponse(res, [], 'No mentors found');
+                return responseHandler.errorResponse(res, {}, 'No mentors found', 400);
             }
                 
 

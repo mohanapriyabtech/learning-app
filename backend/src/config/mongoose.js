@@ -21,9 +21,11 @@ export default class Mongoose extends BaseConfig {
             console.log(`mongodb://${this.ENV.HOST}/${this.ENV.MONGODB_DB_NAME}`)
             this.mongoose.connect(`mongodb://${this.ENV.HOST}/${this.ENV.MONGODB_DB_NAME}`, { useNewUrlParser: true, useUnifiedTopology: true });
         } else {
-            console.log('Mongodb Connecting with password');
-            const URI = `mongodb://${this.ENV.MONGODB_USERNAME}:${this.ENV.MONGODB_PASSWORD}@${this.ENV.MONGODB_HOST}:${this.ENV.MONGODB_PORT}/${this.ENV.MONGODB_DB_NAME}?authMechanism=DEFAULT&authSource=admin`
-            console.log("connecting....")
+            console.log('Mongodb Connecting with password')
+
+            // const URI = `mongodb://${this.ENV.MONGODB_USERNAME}:${this.ENV.MONGODB_PASSWORD}@${this.ENV.MONGODB_HOST}:${this.ENV.MONGODB_PORT}/${this.ENV.MONGODB_DB_NAME}?authMechanism=DEFAULT&authSource=admin` 
+            const URI = `mongodb+srv://${this.ENV.MONGODB_USERNAME}:${this.ENV.MONGODB_PASSWORD}@${this.ENV.MONGODB_HOST}/?retryWrites=true&w=majority`
+            console.log("URI connecting....")
             this.mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true });
         }
         // when successfully connected

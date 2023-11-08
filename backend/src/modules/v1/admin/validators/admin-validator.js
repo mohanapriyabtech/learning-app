@@ -15,7 +15,7 @@ class AdminValidator {
                 //     "any.required": "Phone number is required"
                 // }),
                 password: Joi.string().required().error(new Error("Password is required")),
-                bio: Joi.string().error(new Error("Enter a valid bio")),
+                agree: Joi.boolean()
             }),
 
             login: Joi.object({

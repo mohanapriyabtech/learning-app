@@ -35,6 +35,7 @@ class MentorValidator {
                     }),
                 address: Joi.string(),
                 profile_image: Joi.string(),
+                status:Joi.number(),
             }),
         };
     }

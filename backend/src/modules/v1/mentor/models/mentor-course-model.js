@@ -4,37 +4,31 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 const { Schema, ObjectId } = mongoose;
 
 /**
- * course Schema
- * @description Course model
+ * mentor course Schema
+ * @description MentorCourse model
  */
 
-const CourseSchema = new Schema({
-
-    course: {
-      type: String,
-      required: true,
-      unique: true
+const MentorCourseSchema = new Schema({
+    instructor: {
+      type: ObjectId,
+      required:true
     },
     description: {
       type: String,
       required: true,
     },
-    instructor: {
-      type: ObjectId,
-      ref: 'mentor',
-      required:true
+    mentor_course: {
+      type: String,
+      required: true,
+      unique: true
     },
-    category_id: {
-      type: ObjectId,
-      ref: 'category',
-      required:true
-    },
-    profile_image: {
+    cover_image: {
       type: String
     },
-    profile_image_url: {
+    cover_image_url: {
       type: String
     },
+    total_lesson: Number,
     status: {
       type: Number,
       default: false   //0  set for false
@@ -47,5 +41,6 @@ const CourseSchema = new Schema({
 }, { versionKey: false, timestamps: false });
 
 CourseSchema.plugin(mongoosePaginate);
+CourseSchema.index({ name: 'text' });
 
 export const Course = mongoose.model('course',CourseSchema);

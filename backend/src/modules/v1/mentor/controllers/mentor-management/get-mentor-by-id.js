@@ -17,6 +17,7 @@ class GetMentorController {
     async get(req, res) {
 
         try {
+            console.log(req.params.id,"id")
             const result = await Mentor.findById(req.params.id).exec();
             if (result) {
                 return responseHandler.successResponse(res, result, "Mentor details retrieved successfully");

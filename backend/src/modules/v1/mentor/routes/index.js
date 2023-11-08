@@ -22,6 +22,12 @@ import mentorAuthentication from '../authentication/mentor-authentication';
 import mentorValidator from '../validators/mentor-validator';
 import searchCourseController from '../../admin/controllers/course-management/search-course-controller';
 import updateCourseController from '../../admin/controllers/course-management/update-course-controller';
+import searchMentor from '../controllers/mentor-management/search-mentor';
+import lessonGetByMentorController from '../controllers/lesson-management/lesson-get-by-mentor-controller';
+import lessonGetByCourseController from '../controllers/lesson-management/lesson-get-by-course-controller';
+import getCourseByMentor from '../controllers/course-management/get-course-by-mentor';
+import searchLessonController from '../controllers/lesson-management/search-lesson-controller';
+import getCourseByCategory from '../controllers/course-management/get-course-by-category';
 
 
 const mentorRouter = express.Router();
@@ -38,6 +44,7 @@ mentorRouter.get('/list-mentor', listMentor.list);
 mentorRouter.get('/get-mentor/:id', paramsValidator.validate, getMentorById.get)
 mentorRouter.delete('/delete-mentor/:id', paramsValidator.validate, deleteMentor.delete);
 mentorRouter.patch('/update-mentor/:id', paramsValidator.validate, updateMentor.update);
+mentorRouter.get('/search-mentor',searchMentor.search);
 
 //course management
 mentorRouter.get('/list-course', listCourse.list);
@@ -46,11 +53,17 @@ mentorRouter.delete('/delete-course/:id', paramsValidator.validate,deleteCourseB
 mentorRouter.post('/create-course', mentorAuthentication.check,createCourseController.create);
 mentorRouter.get('/search-course',searchCourseController.search);
 mentorRouter.patch('/edit-course/:id',updateCourseController.update);
+mentorRouter.get('/get-course-by-mentor/:mentorId',getCourseByMentor.get);
+mentorRouter.get('/get-course-by-category/:categoryId',getCourseByCategory.get);
+
 
 //lesson management
 mentorRouter.get('/list-lesson', listLesson.list);
 mentorRouter.get('/get-lesson/:id', paramsValidator.validate, getLessonById.get);
 mentorRouter.delete('/delete-lesson/:id', paramsValidator.validate,deleteLessonById.delete);
 mentorRouter.post('/create-lesson', createLessonController.create);
+mentorRouter.get('/get-lesson-by-mentor/:mentorId', lessonGetByMentorController.get);
+mentorRouter.get('/get-lesson-by-course/:courseId', lessonGetByCourseController.get);
+mentorRouter.get('/search-lesson',searchLessonController.search);
 
 module.exports = mentorRouter;

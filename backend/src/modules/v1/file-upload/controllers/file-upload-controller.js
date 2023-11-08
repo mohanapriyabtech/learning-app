@@ -1,5 +1,10 @@
 import { responseHandler } from "../../../../utils/response-handler";
 import { File } from "../models/fileupload-model";
+import pinataSDK from '@pinata/sdk';
+// const pinata = pinataSDK({
+//     apiKey: process.env.PINATA_API_KEY,
+//     apiSecret: process.env.PINATA_SECRET_KEY,
+//   });
 
 
 class FileUpload {

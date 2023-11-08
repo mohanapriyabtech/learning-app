@@ -8,8 +8,8 @@ class DeleteAdminController {
     }
 
     /**
-      * @description   api to admin signup
-      * @param {*} req /api/v1/admin/signup
+      * @description   
+      * @param {*} req 
       * @param {*} res 
       */
 

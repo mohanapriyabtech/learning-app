@@ -26,7 +26,7 @@ class LoginController {
                     return responseHandler.errorResponse(res, {}, "Password wrong , try again", 400);
                 }
             } else {
-                return responseHandler.errorResponse(res, {}, "No admin exist with this username", 400);
+                return responseHandler.errorResponse(res, {}, "No admin exist with this email", 400);
             }
         }
         catch (err) {

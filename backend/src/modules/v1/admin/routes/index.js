@@ -36,6 +36,12 @@ import searchCourseController from '../controllers/course-management/search-cour
 import adminAuthentication from '../authentication/admin-authentication';
 import searchMentor from '../controllers/mentor-management/search-mentor';
 import mentorValidator from '../validators/mentor-validator';
+import createCategoryController from '../controllers/category-management /create-category-controller';
+import listCategory from '../controllers/category-management /list-category';
+import getCategoryById from '../controllers/category-management /get-category-by-id';
+import deleteCategoryById from '../controllers/category-management /delete-category-by-id';
+import updateCategoryController from '../controllers/category-management /update-category-controller';
+import searchCategoryController from '../controllers/category-management /search-category-controller';
 
 const adminRouter = express.Router();
 
@@ -70,8 +76,16 @@ adminRouter.get('/list-mentor', listMentor.list);
 adminRouter.get('/get-mentor/:id', paramsValidator.validate, getMentorById.get)
 adminRouter.delete('/delete-mentor/:id', paramsValidator.validate, deleteMentor.delete);
 adminRouter.post('/create-mentor',mentorValidator.signup,createMentor.create);
-adminRouter.patch('/update-mentor/:id',mentorValidator.update,updateMentor.update);
+adminRouter.patch('/update-mentor/:id',updateMentor.update);
 adminRouter.get('/search-mentor',searchMentor.search);
+
+// category management
+adminRouter.post('/create-category', createCategoryController.create);
+adminRouter.get('/list-category', listCategory.list);
+adminRouter.get('/get-category/:id', paramsValidator.validate, getCategoryById.get);
+adminRouter.delete('/delete-category/:id', paramsValidator.validate,deleteCategoryById.delete);
+adminRouter.patch('/edit-category/:id', updateCategoryController.update);
+adminRouter.get('/search-category',searchCategoryController.search);
 
 //course management
 adminRouter.post('/create-course', createCourseController.create);
@@ -80,6 +94,9 @@ adminRouter.get('/get-course/:id', paramsValidator.validate, getCourseById.get);
 adminRouter.delete('/delete-course/:id', paramsValidator.validate,deleteCourseById.delete);
 adminRouter.patch('/edit-course/:id', updateCourseController.update);
 adminRouter.get('/search-course',searchCourseController.search);
+
+
+
 
 //lesson management
 adminRouter.get('/list-lesson', listLesson.list);

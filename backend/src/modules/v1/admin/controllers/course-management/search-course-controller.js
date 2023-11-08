@@ -21,16 +21,16 @@ class SearchCourseController {
               
               if (course) {
                 search.$or = [
-                  { description: { $regex: new RegExp(course, 'i') } },
+                  // { description: { $regex: new RegExp(course, 'i') } },
                   { course: { $regex: new RegExp(course, 'i') } },
                 ];
               }
 
-            const result = await Course.find(search).exec()
+            const result = await Course.find(search).populate("category_id").exec()
             if (result.length !== 0) {
                 return responseHandler.successResponse(res, result, 'course list retrived successfully');
             } else {
-                return responseHandler.errorResponse(res, {}, 'No courses found', 400);
+                return responseHandler.successResponse(res,[], 'No courses found');
             }
                 
 

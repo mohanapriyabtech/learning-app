@@ -15,12 +15,24 @@ const LessonSchema = new Schema({
     ref: 'course',
     required: true,
   },
+  mentor_id:{
+    type: ObjectId,
+    ref: 'mentor',
+    required: true,
+  },
   description: {
     type: String,
     required: true,
   },
   video_url: {
     type: String,
+  },
+  lesson: {
+    type: Number,
+  },
+  github_url: String,
+  document_url: {
+    type: [String]
   },
   created_at: {
     type: Date,
