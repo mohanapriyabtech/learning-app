@@ -1,5 +1,5 @@
 import express from 'express';
-import fileUploadController from '../controllers/file-upload-controller';
+import fileUploadController, { uploadToPinata } from '../controllers/file-upload-controller';
 import fileRemoveController from '../controllers/file-remove-controller';
 import fileResizeController from '../controllers/file-resize-controller';
 

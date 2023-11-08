@@ -1,11 +1,7 @@
 import { responseHandler } from "../../../../utils/response-handler";
 import { File } from "../models/fileupload-model";
-import pinataSDK from '@pinata/sdk';
-// const pinata = pinataSDK({
-//     apiKey: process.env.PINATA_API_KEY,
-//     apiSecret: process.env.PINATA_SECRET_KEY,
-//   });
-
+import axios from 'axios'; // Import Axios for making HTTP requests
+import FormData from 'form-data'
 
 class FileUpload {
     /**
@@ -15,7 +11,6 @@ class FileUpload {
      */
     async create(req, res) {
         try {
-
             const { files, body: { service = '' } } = req;
             if (!files || Object.keys(files).length === 0) {
                 return responseHandler.errorResponse(res, {}, 'No files were uploaded.', 400);
@@ -32,25 +27,37 @@ class FileUpload {
                     return responseHandler.errorResponse(res, {}, `File type "${file.mimetype}" is not supported.`, 400);
                 }
 
-                const name = `${file.md5}${Date.now()}.${file.name.split(".").pop()}`;
+                const fileBuffer = file.data; // Get the file buffer
+                const fileName = `${file.md5}${Date.now()}.${file.name.split('.').pop()}`;
                 const imageFolderName = new Date().valueOf();
-                const uploadPath = `./var/www/html/${process.env.UPLOADS_PATH}/${service}/${imageFolderName}/${name}`;
+                const url = `http://${process.env.MONGODB_HOST}/${process.env.UPLOADS_PATH}/${service}/${imageFolderName}/${fileName}`;
+                const options = {
+                    pinataMetadata: {
+                        name: fileName,
+                    },
+                    pinataOptions: {
+                        cidVersion: 0,
+                    },
+                };
 
-                await file.mv(uploadPath);
-
-                const url = `http://${process.env.MONGODB_HOST}/${process.env.UPLOADS_PATH}/${service}/${imageFolderName}/${name}`;
-                await storeFile(url, fileType, service);
-
-                return { name: file.name, url };
+                try {
+                   const fileContent = req.files.media
+                    const url = await uploadToPinata(fileContent, fileName)
+                    await storeFile(url, fileType, service);
+                    return { name: file.name, url: url };
+                } catch (error) {
+                    return responseHandler.errorResponse(res, {}, 'Error uploading to Pinata', 500);
+                }
             }));
 
             return responseHandler.successResponse(res, uploadedFiles, 'Files uploaded successfully');
         } catch (err) {
-            console.log(err);
+            console.error(err);
             return responseHandler.errorResponse(res, err);
         }
     }
 }
+
 
 const getFileType = (extension) => {
     switch (extension) {
@@ -90,4 +97,30 @@ const storeFile = async (file, fileType, service) => {
     }
 };
 
+
+export const uploadToPinata = async (file, fileName) => {
+    try {
+        
+        const formData = new FormData();
+        const fileContent = file
+        formData.append('file', fileContent.data, { filename: fileName});
+
+        const response = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+            headers: {
+                ...formData.getHeaders(), // Use getHeaders() to set the Content-Type header
+                'pinata_api_key': process.env.PINATA_API_KEY,
+                'pinata_secret_api_key': process.env.PINATA_SECRET_KEY,
+            },
+        });
+        console.log(response.data)
+        return response.data.IpfsHash
+    } catch (err) {
+        console.log(err)
+    }
+};
+
 export default new FileUpload();
+
+
+
+
