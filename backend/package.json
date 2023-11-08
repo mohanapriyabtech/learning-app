@@ -29,7 +29,7 @@
     "joi": "^17.7.0",
     "joi-objectid": "^4.0.2",
     "jsonwebtoken": "^9.0.1",
-    "mongoose": "^8.0.0",
+    "mongoose": "^6.0.0",
     "mongoose-find-by-reference": "^1.0.5",
     "mongoose-paginate-v2": "^1.7.1",
     "mysql2": "^3.6.0",
