@@ -17,7 +17,7 @@ class ListMentorController {
     async list(req, res) {
 
         try {
-            const result = await Mentor.find()
+            const result = await Mentor.find().sort({ created_at: -1 });
             if (result.length != 0) {
                 return responseHandler.successResponse(res, result, "Mentor list retrived successfull", 200);
             } else {

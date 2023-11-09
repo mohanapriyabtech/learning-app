@@ -5,12 +5,12 @@ import { Input, Label, Textarea, Button } from '@windmill/react-ui';
 import axios from 'axios'; 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import dotenv from 'dotenv';
-dotenv.config();
+ 
+ require('dotenv').config();
 
 const validationSchema = Yup.object().shape({
-    mentor_name: Yup.string().required('Name is required'),
-    email: Yup.string().email('Invalid email address').required('Email is required'),
+    mentor_name: Yup.string().trim().required('Name is required'),
+    email: Yup.string().trim().email('Invalid email address').required('Email is required'),
     password: Yup.string()
       .required('Password is required')
       .min(8, 'Password must be at least 8 characters long')
@@ -18,11 +18,11 @@ const validationSchema = Yup.object().shape({
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
         'Password must contain at least one letter, one number, and one special character'
       ),
-    phone_number: Yup.string()
+    phone_number: Yup.string().trim()
       .required('Phone number is required')
       .matches(/^\d{10}$/, 'Phone number must be a 10-digit number'),
-    profile_image: Yup.string(),
-    address: Yup.string(),
+    profile_image: Yup.string().trim(),
+    address: Yup.string().trim(),
 });
 
 
@@ -166,7 +166,7 @@ function Forms() {
           <div className="mb-4">
             <Label>
               <span>Mobile Number</span>
-              <Textarea
+              <Input
                 className="mt-1"
                 rows="3"
                 placeholder="0000000000"

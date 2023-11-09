@@ -48,7 +48,7 @@ function Tables() {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      const response = await axios.get(`${apiUrl}/api/v1/admin/list-course`, { headers });
+      const response = await axios.get(`${apiUrl}/api/v1/admin/list-category`, { headers });
       setDataTable(response.data.data);
       setTotalResults(response.data.data.length);
     } catch (error) {
@@ -77,7 +77,7 @@ function Tables() {
         Authorization: `Bearer ${token}`,
       };
       const response = await axios.get(
-        `${apiUrl}/api/v1/admin/search-course?course=${searchQuery}`,
+        `${apiUrl}/api/v1/admin/search-category?category=${searchQuery}`,
         { headers }
       );
       console.log(response.status,)
@@ -97,7 +97,7 @@ function Tables() {
   };
 
   const handleCreateProjectClick = () => {
-    history.push('/app/admin/create-course');
+    history.push('/app/admin/create-category');
   };
 
 
@@ -108,7 +108,7 @@ function Tables() {
         Authorization: `Bearer ${token}`,
       };
 
-      await axios.delete(`${apiUrl}/api/v1/admin/delete-course/${projectId}`, { headers });
+      await axios.delete(`${apiUrl}/api/v1/admin/delete-category/${projectId}`, { headers });
 
       setDataTable(dataTable.filter(project => project.id !== projectId));
       setTotalResults(totalResults - 1);
@@ -121,53 +121,51 @@ function Tables() {
 
   const handleStatusChange = async (project) => {
     try {
+
+      console.log("status change")
       const token = localStorage.getItem('token');
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-  
+
       const newStatus = project.status === 1 ? 0 : 1; // Toggle status between 0 and 1
-  
-      const response = await axios.patch(
-        `${process.env.REACT_APP_API_URL}/api/v1/admin/edit-course/${project._id}`,
-        { status: newStatus },
-        { headers }
+      console.log(newStatus, "stat")
+
+      // await axios.patch(
+      //   `${apiUrl}/api/v1/admin/update-mentor/${project._id}`,
+      //   { status: newStatus },
+      //   { headers }
+      // );
+
+      // Update data
+      setDataTable((prevData) =>
+        prevData.map((p) =>
+          p._id === project._id ? { ...p, status: newStatus } : p
+        )
       );
-  
-      if (response.status === 200) {
-        // Update data
-        setDataTable((prevData) =>
-          prevData.map((p) =>
-            p._id === project._id ? { ...p, status: newStatus } : p
-          )
-        );
-      } else {
-        console.error('Error updating status:', response.status);
-      }
+
+      console.log(dataTable, "table")
     } catch (error) {
       console.error('Error updating status:', error);
     }
   };
-  
 
 
   const handleEditClick = async (project) => {
 
-    localStorage.setItem("description", project.description);
-    localStorage.setItem("instructor", project.instructor);
-    localStorage.setItem("course", project.course);
-    localStorage.setItem("cover_image", project.cover_image);
-    localStorage.setItem("category_id_course", project.category_id._id);
-
-    history.push(`/app/admin/edit-course/${project._id}`)
-  };
+    localStorage.setItem("category_name", project.category_name);
   
+
+    history.push(`/app/admin/edit-category/${project._id}`)
+  };
+
+
 
 
 
   return (
     <>
-      <PageTitle>Courses</PageTitle>
+      <PageTitle>Category</PageTitle>
 
       <div className="px-6 my-6 flex justify-end gap-3 ">
         <input
@@ -178,7 +176,7 @@ function Tables() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Button onClick={handleCreateProjectClick}>
-          Create course
+          Create category
           <span className="ml-2" aria-hidden="true">
             +
           </span>
@@ -190,8 +188,7 @@ function Tables() {
         <Table>
           <TableHeader>
             <tr>
-              <TableCell>Course</TableCell>
-              <TableCell>Category</TableCell>
+              <TableCell>category</TableCell>
               <TableCell>Status</TableCell>
               <TableCell></TableCell>
               <TableCell>Date</TableCell>
@@ -201,7 +198,7 @@ function Tables() {
           {dataTable.length === 0 ? (
              <div className="w-32 h-32 mx-auto flex items-center justify-center ">
               <p className="px-6 text-center text-gray-600 dark:text-gray-400">
-                No courses found.
+                No category found.
               </p>
             </div>
           ) : (
@@ -213,15 +210,11 @@ function Tables() {
                     <div className="flex items-center text-sm">
                       {/* <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User avatar" /> */}
                       <div>
-                        <p className="font-semibold">{project.course}</p>
-
+                        <p className="font-semibold">{project.category_name}</p>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{project.category_id.category_name}</p>
-                  </TableCell>
-
+                  
                   <TableCell>
                     <p className="text-xs text-gray-600 dark:text-gray-400">{project.status === 1 ? "Approved" : "Pending"}</p>
                   </TableCell>
@@ -260,6 +253,8 @@ function Tables() {
                   <TableCell>
                     <div className="flex items-center space-x-4">
                       <Button layout="link" size="icon" aria-label="Edit" onClick={() => handleEditClick(project)}>
+                      {/* onClick={() => openEditCategoryModal(categoryId, categoryName)} */}
+                        
                         {/* <EditProject project={project._id} /> */}
                         <EditIcon className="w-5 h-5" aria-hidden="true" />
                       </Button>

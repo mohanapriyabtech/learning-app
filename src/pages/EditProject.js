@@ -7,11 +7,11 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import Modals from "../pages/Modals"
-import dotenv from 'dotenv';
-dotenv.config();
+ 
+ require('dotenv').config();
 
 const validationSchema = Yup.object().shape({
-  file: Yup.mixed().required('File is required'),
+  file: Yup.mixed().required('File is required')
 });
 
 

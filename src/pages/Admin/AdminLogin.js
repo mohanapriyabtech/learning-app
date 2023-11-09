@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link , useHistory } from 'react-router-dom';
-import dotenv from 'dotenv';
+ 
 import ImageLight from './../../assets/img/login-office.jpeg'
 import ImageDark from './../../assets/img/login-office-dark.jpeg'
 import { GithubIcon, TwitterIcon } from '../../icons'
 import { Label, Input, Button } from '@windmill/react-ui'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-dotenv.config();
+ require('dotenv').config();
 
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
   .email('Invalid email address')
-  .required('Required'),
+  .required('Email is Required'),
   password: Yup.string()
     .min(3, 'Password length should be minimum 3')
     .max(15, 'Password length should be maximum 15')
-    .required('Required')
+    .required('Password is Required')
 });
 
 function Login() {
@@ -53,7 +53,7 @@ function Login() {
         setError(null);
         
         formik.resetForm();
-        history.push('/app/admin');
+        history.push('/app/admin/');
       }
     } catch (error) {
       if (error.response) {

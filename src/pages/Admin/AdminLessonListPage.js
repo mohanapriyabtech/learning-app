@@ -48,7 +48,7 @@ function Tables() {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      const response = await axios.get(`${apiUrl}/api/v1/admin/list-course`, { headers });
+      const response = await axios.get(`${apiUrl}/api/v1/admin/list-lessons`, { headers });
       setDataTable(response.data.data);
       setTotalResults(response.data.data.length);
     } catch (error) {
@@ -77,7 +77,7 @@ function Tables() {
         Authorization: `Bearer ${token}`,
       };
       const response = await axios.get(
-        `${apiUrl}/api/v1/admin/search-course?course=${searchQuery}`,
+        `${apiUrl}/api/v1/admin/search-lessons?lessons=${searchQuery}`,
         { headers }
       );
       console.log(response.status,)
@@ -97,7 +97,7 @@ function Tables() {
   };
 
   const handleCreateProjectClick = () => {
-    history.push('/app/admin/create-course');
+    history.push('/app/admin/create-lessons');
   };
 
 
@@ -108,7 +108,7 @@ function Tables() {
         Authorization: `Bearer ${token}`,
       };
 
-      await axios.delete(`${apiUrl}/api/v1/admin/delete-course/${projectId}`, { headers });
+      await axios.delete(`${apiUrl}/api/v1/admin/delete-lessons/${projectId}`, { headers });
 
       setDataTable(dataTable.filter(project => project.id !== projectId));
       setTotalResults(totalResults - 1);
@@ -129,7 +129,7 @@ function Tables() {
       const newStatus = project.status === 1 ? 0 : 1; // Toggle status between 0 and 1
   
       const response = await axios.patch(
-        `${process.env.REACT_APP_API_URL}/api/v1/admin/edit-course/${project._id}`,
+        `${process.env.REACT_APP_API_URL}/api/v1/admin/edit-lessons/${project._id}`,
         { status: newStatus },
         { headers }
       );
@@ -155,11 +155,11 @@ function Tables() {
 
     localStorage.setItem("description", project.description);
     localStorage.setItem("instructor", project.instructor);
-    localStorage.setItem("course", project.course);
+    localStorage.setItem("lessons", project.lessons);
     localStorage.setItem("cover_image", project.cover_image);
-    localStorage.setItem("category_id_course", project.category_id._id);
+    localStorage.setItem("category_id_lessons", project.category_id._id);
 
-    history.push(`/app/admin/edit-course/${project._id}`)
+    history.push(`/app/admin/edit-lessons/${project._id}`)
   };
   
 
@@ -167,7 +167,7 @@ function Tables() {
 
   return (
     <>
-      <PageTitle>Courses</PageTitle>
+      <PageTitle>Lessons</PageTitle>
 
       <div className="px-6 my-6 flex justify-end gap-3 ">
         <input
@@ -178,7 +178,7 @@ function Tables() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <Button onClick={handleCreateProjectClick}>
-          Create course
+          Create lessons
           <span className="ml-2" aria-hidden="true">
             +
           </span>
@@ -190,7 +190,7 @@ function Tables() {
         <Table>
           <TableHeader>
             <tr>
-              <TableCell>Course</TableCell>
+              <TableCell>lessons</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Status</TableCell>
               <TableCell></TableCell>
@@ -201,7 +201,7 @@ function Tables() {
           {dataTable.length === 0 ? (
              <div className="w-32 h-32 mx-auto flex items-center justify-center ">
               <p className="px-6 text-center text-gray-600 dark:text-gray-400">
-                No courses found.
+                No lessons found.
               </p>
             </div>
           ) : (
@@ -213,7 +213,7 @@ function Tables() {
                     <div className="flex items-center text-sm">
                       {/* <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User avatar" /> */}
                       <div>
-                        <p className="font-semibold">{project.course}</p>
+                        <p className="font-semibold">{project.lessons}</p>
 
                       </div>
                     </div>

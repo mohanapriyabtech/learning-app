@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import dotenv from 'dotenv';
+ 
 import PageTitle from '../../components/Typography/PageTitle'
 import EditProject from '../EditProject';
 import { Table, TableHeader,TableCell,TableBody,TableRow,TableFooter,TableContainer,Badge,Avatar,Button,Pagination } from '@windmill/react-ui'
 import { EditIcon, TrashIcon } from '../../icons'
-dotenv.config();
+ require('dotenv').config();
 
 
 function MentorsList() {
@@ -202,7 +202,15 @@ function MentorsList() {
               <TableCell>Actions</TableCell>
             </tr>
           </TableHeader>
+          {dataTable.length === 0 ? (
+             <div className="w-32 h-32 mx-auto flex items-center justify-center ">
+              <p className="px-6 text-center text-gray-600 dark:text-gray-400">
+                No mentor found.
+              </p>
+            </div>
+          ) : (
           <TableBody>
+            
             {dataTable.map((project, i) => (
               <TableRow key={i}>
                 <TableCell>
@@ -247,6 +255,7 @@ function MentorsList() {
               </TableRow>
             ))}
           </TableBody>
+          )}
         </Table>
         <TableFooter>
           <Pagination

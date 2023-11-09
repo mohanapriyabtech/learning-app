@@ -14,8 +14,8 @@ import * as Yup from 'yup';
 const validationSchema = Yup.object().shape({
   description: Yup.string().trim()
     .required('Description is required'),
-  course: Yup.string().trim()
-    .required('Course is required'),
+  lesson: Yup.string().trim()
+    .required('lesson is required'),
     
   instructor: Yup.string().required('Instructor is required'),
   category_id: Yup.string().required('Category is required'),
@@ -31,7 +31,7 @@ function Forms() {
   const [category, setCategory] = useState([]);
   const [formData, setFormData] = useState({
     description: '',
-    course: '',
+    lesson: '',
     category_id: '',
     cover_image: null,
   });
@@ -84,12 +84,12 @@ function Forms() {
       const form_data = new FormData();
 
       form_data.append('description', formik.values.description);
-      form_data.append('course', formik.values.course);
+      form_data.append('lesson', formik.values.lesson);
       form_data.append('instructor', formik.values.instructor);
       form_data.append('category_id', formik.values.category_id);
       const file_data = new FormData();
       file_data.append('media', formik.values.cover_image);
-      file_data.append('service', 'courses');
+      file_data.append('service', 'lessons');
 
       const fileResponse = await axios.post(`${apiUrl}/api/v1/file-upload/upload`, file_data, {
         headers: {
@@ -103,7 +103,7 @@ function Forms() {
       // form_data.append('cover_image_url', fileResponse.data.data[0].url);
 
       const token = localStorage.getItem("token");
-      const response = await axios.post(`${apiUrl}/api/v1/admin/create-course`, form_data, {
+      const response = await axios.post(`${apiUrl}/api/v1/admin/create-lesson`, form_data, {
         headers: {
           Authorization: `Bearer ${token}`
         },
@@ -113,7 +113,7 @@ function Forms() {
 
       if (response.status === 200) {
         formik.resetForm();
-        history.push('/app/admin/courses');
+        history.push('/app/admin/lessons');
       }
     } catch (error) {
       console.error('API error:', error);
@@ -128,24 +128,24 @@ function Forms() {
 
   return (
     <>
-      <PageTitle>Course Create form</PageTitle>
+      <PageTitle>lesson Create form</PageTitle>
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style={{ width: '50%' }}>
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
             <Label>
-              <span>Course Name</span>
+              <span>lesson Name</span>
               <Input
                 className="mt-1"
-                placeholder="course name"
-                name="course"
-                value={formik.values.course}
+                placeholder="lesson name"
+                name="lesson"
+                value={formik.values.lesson}
                 onChange={formik.handleChange}
               // style={{width:"50%"}}
               />
             </Label>
-            {formik.touched.course && formik.errors.course ? (
-              <div className="text-red-600">{formik.errors.course}</div>
+            {formik.touched.lesson && formik.errors.lesson ? (
+              <div className="text-red-600">{formik.errors.lesson}</div>
             ) : null}
           </div>
 
@@ -216,18 +216,18 @@ function Forms() {
           </div>
           {/* <div className="mb-4">
             <Label>
-              <span>Course</span>
+              <span>lesson</span>
               <Textarea
                 className="mt-1"
                 rows="3"
                 placeholder=""
-                name="course"
-                value={formik.values.course}
+                name="lesson"
+                value={formik.values.lesson}
                 onChange={formik.handleChange}
               />
             </Label>
-            {formik.touched.course && formik.errors.course ? (
-              <div className="text-red-600">{formik.errors.course}</div>
+            {formik.touched.lesson && formik.errors.lesson ? (
+              <div className="text-red-600">{formik.errors.lesson}</div>
             ) : null}
           </div> */}
 

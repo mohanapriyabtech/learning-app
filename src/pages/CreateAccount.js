@@ -7,18 +7,20 @@ import { GithubIcon, TwitterIcon } from '../icons'
 import { Input, Label, Button } from '@windmill/react-ui'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+ 
+ require('dotenv').config();
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string()
     .max(15, 'Must be 15 characters or less')
-    .required('Required'),
+    .required('Name is Required'),
   email: Yup.string()
     .email('Invalid email address')
-    .required('Required'),
+    .required('Email is Required'),
   password: Yup.string()
     .min(3, 'Password length should be minimum 3')
     .max(15, 'Password length should be maximum 15')
-    .required('Required'),
+    .required('Password is Required'),
 });
 
 function Login() {
@@ -43,7 +45,7 @@ function Login() {
   const handleSubmit = async (values) => {
     // e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/v1/admin/signup', values);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/admin/signup`, values);
 
      
       if (response.status === 200) {
@@ -167,7 +169,7 @@ function Login() {
               <p className="mt-4">
                 <Link
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/login"
+                  to="/admin/dashboard/login"
                 >
                   Already have an account? Login
                 </Link>

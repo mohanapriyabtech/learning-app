@@ -1,6 +1,7 @@
 import React, { lazy } from 'react'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import AccessibleNavigationAnnouncer from './components/AccessibleNavigationAnnouncer'
+ 
 
 const Layout = lazy(() => import('./containers/Layout'))
 const AdminLayout = lazy(() => import('./containers/AdminLayout'))
@@ -12,8 +13,7 @@ const MentorCreateAccount = lazy(() => import('./pages/Mentor/MentorSignup'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const AdminLogin = lazy(()=> import('./pages/Admin/AdminLogin'))
 const MentorSignup = lazy(()=> import('./pages/Mentor/MentorSignup'))
-
-
+ require('dotenv').config();
 
 function App() {
   return (
@@ -41,7 +41,7 @@ function App() {
           <Route path="/admin/dashboard/login" component={AdminLogin} />
 
           {/* If you have an index page, you can remove this Redirect */}
-          {/* <Redirect exact from="/" to="/login" /> */}
+          <Redirect exact from="/" to="/admin/dashboard/login" />
         
         </Switch>
       </Router>

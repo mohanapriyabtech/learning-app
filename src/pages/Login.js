@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link , useHistory } from 'react-router-dom';
-import dotenv from 'dotenv';
 import ImageLight from '../assets/img/login-office.jpeg'
 import ImageDark from '../assets/img/login-office-dark.jpeg'
 import { GithubIcon, TwitterIcon } from '../icons'
 import { Label, Input, Button } from '@windmill/react-ui'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-dotenv.config();
+ 
+ require('dotenv').config();
 
 
 const loginSchema = Yup.object().shape({

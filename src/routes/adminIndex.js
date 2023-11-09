@@ -1,6 +1,8 @@
 import { lazy } from 'react'
 import EditCourse from '../pages/Mentor/CourseEditForm'
 
+
+
 // use lazy for better code splitting, a.k.a. load faster
 const Dashboard = lazy(() => import('../pages/Dashboard'))
 const Forms = lazy(() => import('../pages/Forms'))
@@ -17,6 +19,11 @@ const AdminCourseEdit = lazy(() => import('../pages/Admin/CourseEditForm'))
 const Page404 = lazy(() => import('../pages/404'))
 const Blank = lazy(() => import('../pages/Blank'))
 const uploadPage = lazy(()=> import('../pages/uploadPage'))
+const Category = lazy(()=> import('../pages/Admin/AdminCategory'))
+const CreateCategory = lazy(()=> import('../pages/Admin/CategoryCreateForm'))
+const EditCategory = lazy(()=> import('../pages/Admin/CategoryEditForm'))
+const CreateLesson = lazy(()=> import('../pages/Admin/LessonCreatePage'))
+const EditLesson = lazy(()=> import('../pages/Admin/LessonEditPage'))
 
 /**
  * ⚠ These are internal routes!
@@ -32,6 +39,22 @@ const routes = [
   {
     path: '/dashboard', // the url
     component: Dashboard, // view rendered
+  },
+  {
+    path: '/create-category',
+    component: CreateCategory,
+  },
+  {
+    path: '/edit-category/:id',
+    component: EditCategory,
+  },
+  {
+    path: '/create-lesson',
+    component: CreateLesson,
+  },
+  {
+    path: '/edit-lesson/:id',
+    component: EditLesson,
   },
   {
     path: '/create-course',
@@ -64,6 +87,10 @@ const routes = [
   {
     path: '/courses',
     component: Courses,
+  },
+  {
+    path: '/categories',
+    component: Category,
   },
   {
     path: '/mentors',

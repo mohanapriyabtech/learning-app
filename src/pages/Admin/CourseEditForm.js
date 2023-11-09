@@ -7,13 +7,16 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Modals from '../../pages/Modals';
+ 
+ require('dotenv').config();
 
 
 const validationSchema = Yup.object().shape({
-  course: Yup.string(),
-  instructor: Yup.string(),
+  course: Yup.string().trim().required('course is required'),
+  instructor: Yup.string().trim(),
   cover_image: Yup.string(),
   description: Yup.string(),
+  category_id: Yup.string(),
 });
 
 
@@ -21,14 +24,6 @@ const validationSchema = Yup.object().shape({
 function EditCourse() {
   const apiUrl = process.env.REACT_APP_API_URL;
   const history = useHistory();
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [instructors, setInstructors] = useState([]);
-
-  const closeSuccessModal = () => {
-    setShowSuccessModal(false);
-    history.push('/app/projects');
-  };
 
   let { id } = useParams();
 
@@ -36,16 +31,23 @@ function EditCourse() {
     description: localStorage.getItem('description') || '',
     instructor: localStorage.getItem('instructor') || '',
     course: localStorage.getItem('course') || '',
+    category_id: localStorage.getItem('category_id_course') || '',
     cover_image: null,
   };
 
- 
+  const [instructors, setInstructors] = useState([]);
+  const [instructorSelect,setInstructorSelect] = useState('');
+
+  const instructorId = initialValues.instructor;
+  const updatedItems = instructors.filter(item => item._id !== instructorId);
+
 
   useEffect(() => {
     const fetchInstructors = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/v1/admin/list-mentor`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/list-mentor`);
         const instructorData = response.data.data;
+        console.log(instructorData,"instrutors")
         setInstructors(instructorData);
         
       } catch (error) {
@@ -56,16 +58,69 @@ function EditCourse() {
     fetchInstructors();
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/get-mentor/${initialValues.instructor}`, { headers })
+      .then((response) => {
+        const data = response.data.data;
+        setInstructorSelect(data.mentor_name);
+      })
+      .catch((error) => {
+        console.error('Error fetching instructor data:', error);
+      });
+  }, []);
+
+  const [category, setCategory] = useState([]);
+  const [categorySelect,setCategorySelect] = useState('');
+
+  const categoryId = initialValues.category_id;
+  const updatedCategoryItems = category.filter(item => item._id !== categoryId);
+
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/list-category`);
+        const categoryData = response.data.data;
+        setCategory(categoryData);
+        
+      } catch (error) {
+        console.error('Error fetching instructor data:', error);
+      }
+    };
+  
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/get-category/${initialValues.category_id}`, { headers })
+      .then((response) => {
+        const data = response.data.data;
+        setCategorySelect(data.category_name);
+      })
+      .catch((error) => {
+        console.error('Error fetching category data:', error);
+      });
+  }, []);
+
+
   const handleSubmit = async (e) => { 
     e.preventDefault();
     try {
 
 
       const form_data = new FormData();
-
-      console.log(initialValues,formik.values.course,"courseeeeeeeeee")
      
-      if (formik.values.course !== initialValues.course) {
+      if (formik.values.course.length > 0 && formik.values.course !== initialValues.course) {
         form_data.append('course', formik.values.course);
       }
       if (formik.values.description !== initialValues.description) {
@@ -83,7 +138,7 @@ function EditCourse() {
         file_data.append('media', formik.values.cover_image);
         file_data.append('service', 'mentors');
     
-        const fileResponse = await axios.post(`http://localhost:4000/api/v1/file-upload/upload`, file_data, {
+        const fileResponse = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/file-upload/upload`, file_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -102,7 +157,7 @@ function EditCourse() {
 
   
       const token = localStorage.getItem("token");
-      const response = await axios.patch(`http://localhost:4000/api/v1/admin/edit-course/${id}`, form_data, {
+      const response = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/admin/edit-course/${id}`, form_data, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`
@@ -111,8 +166,8 @@ function EditCourse() {
  
       if (response.status === 200) {
         formik.resetForm();
-        setModalMessage('Mentor updated successfully!');
-        setShowSuccessModal(true);
+        // setModalMessage('Mentor updated successfully!');
+        // setShowSuccessModal(true);
         history.push('/app/admin/courses')
       }
     } catch (error) {
@@ -133,6 +188,23 @@ function EditCourse() {
     onSubmit: handleSubmit,
   });
 
+  //form validation
+
+  const [courseError, setCourseError] = useState('');
+
+  const handleCourseNameChange = (e) => {
+    formik.handleChange(e); 
+
+    if (e.target.value.length === 0) {
+      setCourseError('Course is required');
+    } else {
+      setCourseError(''); 
+    }
+  };
+
+
+
+
   return (
     <>
       <PageTitle>Course Edit form</PageTitle>
@@ -148,13 +220,14 @@ function EditCourse() {
                 placeholder=""
                 name="course"
                 value={formik.values.course}
-                onChange={formik.handleChange}
+                onChange={handleCourseNameChange}
                 
               />
             </Label>
             {formik.touched.course && formik.errors.course ? (
               <div className="text-red-600">{formik.errors.course}</div>
             ) : null}
+            {courseError && <div className="text-red-600">{courseError}</div>}
           
           </div>
 
@@ -169,7 +242,7 @@ function EditCourse() {
                 name="description"
                 value={formik.values.description}
                 onChange={formik.handleChange}
-                // disabled
+               
               />
             </Label>
             {formik.touched.description && formik.errors.description ? (
@@ -187,18 +260,23 @@ function EditCourse() {
                 onChange={formik.handleChange}
               >
                 
-                {formik.values.instructor ? (
+                {instructorSelect ? (
                    
-                  <option value={formik.values.instructor}>{formik.values.instructor}</option>
-                ) : (
-                  <option value="">Select an instructor</option>
-                )}
-
-                {instructors.map((instructor) => (
-                  <option key={instructor._id} value={instructor._id} style={{ height: '50px' }} >
-                    {instructor.mentor_name}
-                  </option>
-                ))}
+                   <option value={instructorSelect}>{instructorSelect}</option>
+                   ) : (
+                   <option value="">Select an instructor</option>
+                   )}
+                 {updatedItems
+                   .map(instructor => (
+                     <option
+                       key={instructor._id}
+                       value={instructor._id}
+                       // style={{ height: '50px' ,width:"50px"}}
+                     >
+                       {instructor.mentor_name}
+                     </option>
+                   ))
+                 }
                 
               </select>
             </Label>
@@ -207,10 +285,45 @@ function EditCourse() {
             ) : null}
           </div>
 
+          <div className="mb-4">
+            <Label>
+            <span>Category</span>
+            <select
+                className="mt-1 block w-35 h-10 rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                name="category_id" 
+                value={formik.values.category_id}
+                onChange={formik.handleChange}
+              >
+                
+                {categorySelect ? (
+                   
+                   <option value={categorySelect}>{categorySelect}</option>
+                   ) : (
+                   <option value="">Select a category</option>
+                   )}
+                 {updatedCategoryItems
+                   .map(category => (
+                     <option
+                       key={category._id}
+                       value={category._id}
+                       // style={{ height: '50px' ,width:"50px"}}
+                     >
+                       {category.category_name}
+                     </option>
+                   ))
+                 }
+                
+              </select>
+            </Label>
+            {formik.touched.category_id && formik.errors.category_id ? (
+              <div className="text-red-600">{formik.errors.category_id}</div>
+            ) : null}
+          </div>
+
           {/* File Upload */}
           <div className="mb-4 relative">
             <Label>
-              <span className="text-gray-700 dark:text-gray-400">CoverImage Upload</span>
+              <span className="text-gray-700 dark:text-gray-400">Cover Image Upload</span>
               <div
                 className="mt-1 w-full rounded-md shadow-sm focus-within:border-purple-400 focus-within:ring focus-within:ring-purple-200 focus-within:ring-opacity-50 cursor-pointer"
               >
@@ -226,7 +339,8 @@ function EditCourse() {
                     Choose file
                   </span>
                   <span> </span>
-                  {formik.values.cover_image ? formik.values.cover_image.name : fileName}
+                  {formik.values.cover_image ? formik.values.cover_image.name : (fileName === "undefined" ? 'No file selected' : fileName)}
+
                 </div>
               </div>
             </Label>
@@ -240,8 +354,8 @@ function EditCourse() {
             <Button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              disabled={formik.isSubmitting}
-              onClick={handleSubmit}
+              disabled={formik.isSubmitting || courseError}
+              onClick={ handleSubmit }
             >
               Submit
             </Button>

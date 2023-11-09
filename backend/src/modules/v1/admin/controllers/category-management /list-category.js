@@ -17,7 +17,7 @@ class ListcategoryController {
     async list(req, res) {
 
         try {
-            const result = await Category.find()
+            const result = await Category.find().sort({ created_at: -1 });
             if (result.length != 0) {
                 return responseHandler.successResponse(res, result, "category list retrived successfull", 200);
             } else {

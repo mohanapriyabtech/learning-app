@@ -6,8 +6,8 @@ import { Input, Label, Textarea, Button } from '@windmill/react-ui';
 import axios from 'axios'; 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import dotenv from 'dotenv';
-dotenv.config();
+ 
+ require('dotenv').config();
 
 
 

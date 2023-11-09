@@ -16,11 +16,12 @@ const routes = [
     //   icon: 'FormsIcon',
     //   name: 'Forms',
     // },
-    // {
-    //   path: '/app/admin/edit-course:id',
-    //   icon: 'FormsIcon',
-    //   name: 'MentorsEditForm',
-    // },
+   
+    {
+      path: '/app/admin/categories',
+      icon: 'TablesIcon',
+      name: 'Category',
+    },
   
     {
       path: '/app/admin/courses',
@@ -28,10 +29,15 @@ const routes = [
       name: 'Courses',
     },
     {
+      path: '/app/admin/lessons',
+      icon: 'TablesIcon',
+      name: 'Lesson',
+    },
+    {
       path: '/app/admin/mentors',
       icon: 'TablesIcon',
       name: 'Mentors',
-    },
+    }
     
   ]
   

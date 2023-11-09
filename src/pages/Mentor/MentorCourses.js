@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
-import dotenv from 'dotenv';
-
-
+ 
 import PageTitle from '../../components/Typography/PageTitle'
 import SectionTitle from '../../components/Typography/SectionTitle'
 import EditProject from '../EditProject';
@@ -23,7 +21,7 @@ import {
 import { EditIcon, TrashIcon } from '../../icons'
 
 import response from '../../utils/demo/tableData'
-dotenv.config();
+ require('dotenv').config();
 
 function Tables() {
   const apiUrl = process.env.REACT_APP_API_URL || ''

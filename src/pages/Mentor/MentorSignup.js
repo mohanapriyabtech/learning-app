@@ -6,6 +6,8 @@ import ImageDark from '../../assets/img/create-account-office-dark.jpeg'
 import { Input, Label, Button } from '@windmill/react-ui'
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+ 
+ require('dotenv').config();
 
 const SignupSchema = Yup.object().shape({
   mentor_name: Yup.string().required('Name is required'),
@@ -45,7 +47,7 @@ function Signup() {
       form_data.append('phone_number', formik.values.phone_number);
       form_data.append('password', formik.values.password);
       const token = localStorage.getItem("token");
-      const response = await axios.post('http://localhost:4000/api/v1/mentor/signup', form_data,{
+      const response = await axios.post('${process.env.REACT_APP_API_URL}/api/v1/mentor/signup', form_data,{
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`

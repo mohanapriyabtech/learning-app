@@ -17,7 +17,7 @@ class ListCourseController {
     async list(req, res) {
 
         try {
-            const result = await Course.find()
+            const result = await Course.find().sort({ created_at: -1 })
             if (result.length != 0) {
                 return responseHandler.successResponse(res, result, "Course list retrived successfull", 200);
             } else {

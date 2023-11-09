@@ -18,7 +18,7 @@ class GetCourseByMentorController {
 
         try {
         
-            const result = await Course.find( {instructor:req.params.mentorId }).populate('category_id').exec();
+            const result = await Course.find( {instructor:req.params.mentorId }).populate('category_id').sort({ created_at: -1 }).exec();
             if (result.length !== 0) {
                 return responseHandler.successResponse(res, result, "Course details retrieved successfully");
             } else {
