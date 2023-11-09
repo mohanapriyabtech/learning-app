@@ -12,7 +12,7 @@ const NotificationSchema = new Schema({
 
     service: {
         type: String,
-        enum: ['course', 'mentor'],
+        enum: ['course', 'mentor', 'category'],
         required: [true, 'service is required']
     },
     sender: String,

@@ -17,10 +17,8 @@ class NotificationController {
 
     async store(model_name, params, receiverId, senderId, message, sender, receiver, type) {
         try {
-            console.log("enter")
+
             await Notification.create({ service: model_name, data: JSON.stringify(params), receiver: receiverId, sender: senderId, message: message, docModel_sender: sender, docModel_receiver: receiver, type: type })
-                                    
-            console.log("notification")
         }
 
         catch (err) {

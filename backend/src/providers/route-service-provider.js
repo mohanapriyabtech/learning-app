@@ -3,6 +3,7 @@ import userRouter from "../modules/v1/user/routes";
 import adminRouter from "../modules/v1/admin/routes";
 import mentorRouter from "../modules/v1/mentor/routes";
 import fileRouter from "../modules/v1/file-upload/routes/fileupload-routes"
+import notificationRouter from "../modules/v1/Notification/routes/index"
 import { responseHandler } from "../utils/response-handler";
 
 
@@ -24,6 +25,7 @@ export default class RouteServiceProvider extends BaseConfig {
         this.app.use('/api/v1/mentor', mentorRouter);
         this.app.use('/api/v1/admin', adminRouter);
         this.app.use('/api/v1/file-upload', fileRouter);
+        this.app.use('/api/v1/notification',notificationRouter);
         // Serve static images
         this.app.use('/images', this.express.static('/home/sparkout/Documents/projects/learning-app/backend/var/www/html/upload'));
 

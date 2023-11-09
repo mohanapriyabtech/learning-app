@@ -27,7 +27,12 @@ class categoryCreateController {
         try {
 
             const result = await Category.create(req.body)
-            await createNotificationController.store("category", result, "all","admin", "category created", "admin" ,"user", 1)
+            console.log(req.headers.authorization)
+            req.headers.authorization = req.headers.authorization.split(' ')[1];
+            console.log(req.headers.authorization)
+            const senderId = JSON.parse(decrypt(req.headers.authorization))
+            console.log(senderId)
+            await createNotificationController.store("category", result,"all" ,senderId._id, "category created", "admin" ,"user", 1)
             return responseHandler.successResponse(res, result, "category created successfully", 200);
 
         } catch (err) {

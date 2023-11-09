@@ -122,7 +122,6 @@ function Tables() {
   const handleStatusChange = async (project) => {
     try {
 
-      console.log("status change")
       const token = localStorage.getItem('token');
       const headers = {
         Authorization: `Bearer ${token}`,
@@ -131,11 +130,11 @@ function Tables() {
       const newStatus = project.status === 1 ? 0 : 1; // Toggle status between 0 and 1
       console.log(newStatus, "stat")
 
-      // await axios.patch(
-      //   `${apiUrl}/api/v1/admin/update-mentor/${project._id}`,
-      //   { status: newStatus },
-      //   { headers }
-      // );
+      await axios.patch(
+        `${apiUrl}/api/v1/admin/edit-category/${project._id}`,
+        { status: newStatus },
+        { headers }
+      );
 
       // Update data
       setDataTable((prevData) =>
@@ -144,7 +143,6 @@ function Tables() {
         )
       );
 
-      console.log(dataTable, "table")
     } catch (error) {
       console.error('Error updating status:', error);
     }
@@ -152,10 +150,7 @@ function Tables() {
 
 
   const handleEditClick = async (project) => {
-
     localStorage.setItem("category_name", project.category_name);
-  
-
     history.push(`/app/admin/edit-category/${project._id}`)
   };
 
