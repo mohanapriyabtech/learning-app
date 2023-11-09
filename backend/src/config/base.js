@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
- 
+import dotenv from 'dotenv';
 import Express from './express';
 import { Sequelize } from 'sequelize';
 
