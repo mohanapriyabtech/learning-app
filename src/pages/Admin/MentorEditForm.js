@@ -46,6 +46,7 @@ function EditProject() {
   };
   const fileName = localStorage.getItem('profile_image')
 
+  
 
   const handleSubmit = async (values) => {
     try {
@@ -90,13 +91,18 @@ function EditProject() {
 
       if (response.status === 200) {
         formik.resetForm();
-        setModalMessage('Mentor updated successfully!');
+     
         setShowSuccessModal(true);
-        history.push('/app/admin/mentors')
+        
       }
     } catch (error) {
       console.error('API error:', error);
     }
+  };
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    history.push('/app/admin/mentors'); // Redirect after closing the modal
   };
 
   const formik = useFormik({
@@ -275,12 +281,13 @@ function EditProject() {
             <Button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              disabled={formik.isSubmitting || mentorNameError || phoneNumberError}
+              disabled={formik.isSubmitting || !formik.dirty || mentorNameError || phoneNumberError}
               onClick={handleSubmit}
             >
               Submit
             </Button>
           </div>
+          <Modals isOpen={showSuccessModal} onClose={handleCloseModal} message="Mentor updated successfully!" />
         </form>
       </div>
     </>

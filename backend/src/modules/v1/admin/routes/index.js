@@ -42,6 +42,7 @@ import getCategoryById from '../controllers/category-management /get-category-by
 import deleteCategoryById from '../controllers/category-management /delete-category-by-id';
 import updateCategoryController from '../controllers/category-management /update-category-controller';
 import searchCategoryController from '../controllers/category-management /search-category-controller';
+import updateLessonController from '../../mentor/controllers/lesson-management/update-lesson-controller';
 
 const adminRouter = express.Router();
 
@@ -103,5 +104,6 @@ adminRouter.get('/list-lesson', listLesson.list);
 adminRouter.get('/get-lesson/:id', paramsValidator.validate, getLessonById.get);
 adminRouter.delete('/delete-lesson/:id', paramsValidator.validate,deleteLessonById.delete);
 adminRouter.post('/create-lesson', createLessonController.create);
+adminRouter.patch('/edit-lesson/:id', updateLessonController.update);
 
 module.exports = adminRouter;

@@ -10,7 +10,7 @@ class UpdateLessonController {
 
     /**
      * @descriptions   update Course details
-     * @param {*} req  /api/v1/admin/update-lesson/6384c6edb9eda24175b56c85
+     * @param {*} req  /api/v1/admin/edit-lesson/6384c6edb9eda24175b56c85
      * @body           
      * {             
      * "name":"aravindh"              
@@ -21,7 +21,6 @@ class UpdateLessonController {
     async update(req, res) {
 
         try {
-            const file = req.body.file;
 
             const result = await Lesson.findByIdAndUpdate(req.params.id, req.body, { new: true }).exec();
 

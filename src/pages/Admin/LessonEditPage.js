@@ -14,7 +14,7 @@ import Modals from '../../pages/Modals';
 const validationSchema = Yup.object().shape({
   lesson: Yup.string().trim().required('lesson is required'),
   instructor: Yup.string().trim(),
-  cover_image: Yup.string(),
+  video_url: Yup.string(),
   description: Yup.string(),
   course_id: Yup.string(),
 });
@@ -28,17 +28,18 @@ function EditLesson() {
   let { id } = useParams();
 
   const initialValues = {
-    description: localStorage.getItem('description') || '',
-    instructor: localStorage.getItem('instructor') || '',
-    lesson: localStorage.getItem('lesson') || '',
-    course_id: localStorage.getItem('course_id_lesson') || '',
-    cover_image: null,
+  
+    mentor_id: localStorage.getItem('lessonsMentor') || '',
+    title: localStorage.getItem('title') || '',
+    course_id: localStorage.getItem('lessonsCourse') || '',
+    video_url: null,
+    github_url: null
   };
 
   const [instructors, setInstructors] = useState([]);
   const [instructorSelect,setInstructorSelect] = useState('');
 
-  const instructorId = initialValues.instructor;
+  const instructorId = initialValues.mentor_id;
   const updatedItems = instructors.filter(item => item._id !== instructorId);
 
 
@@ -64,7 +65,7 @@ function EditLesson() {
       Authorization: `Bearer ${token}`,
     };
 
-    axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/get-mentor/${initialValues.instructor}`, { headers })
+    axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/get-mentor/${initialValues.mentor_id}`, { headers })
       .then((response) => {
         const data = response.data.data;
         setInstructorSelect(data.mentor_name);
@@ -79,6 +80,7 @@ function EditLesson() {
 
   const courseId = initialValues.course_id;
   const updatedCourseItems = course.filter(item => item._id !== courseId);
+  console.log(updatedCourseItems,"items")
 
 
   useEffect(() => {
@@ -105,13 +107,14 @@ function EditLesson() {
     axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/get-course/${initialValues.course_id}`, { headers })
       .then((response) => {
         const data = response.data.data;
-        setCourseSelect(data.course_name);
+        setCourseSelect(data.course);
       })
       .catch((error) => {
         console.error('Error fetching course data:', error);
       });
   }, []);
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
@@ -120,22 +123,22 @@ function EditLesson() {
 
       const form_data = new FormData();
      
-      if (formik.values.lesson.length > 0 && formik.values.lesson !== initialValues.lesson) {
-        form_data.append('lesson', formik.values.lesson);
+      if (formik.values.title.length > 0 && formik.values.title !== initialValues.title) {
+        form_data.append('title', formik.values.title);
       }
-      if (formik.values.description !== initialValues.description) {
-        form_data.append('description', formik.values.description);
+      if (formik.values.mentor_id !== initialValues.mentor_id) {
+        form_data.append('mentor_id', formik.values.mentor_id);
       }
-      if (formik.values.instructor !== initialValues.instructor) {
-        form_data.append('instructor', formik.values.instructor);
+      if (formik.values.course_id !== initialValues.course_id) {
+        form_data.append('course_id', formik.values.course_id);
       }
     
       // form_data.append('file', formData.file); 
 
-      if (formik.values.cover_image) {
+      if (formik.values.video_url) {
 
         const file_data = new FormData();
-        file_data.append('media', formik.values.cover_image);
+        file_data.append('media', formik.values.video_url);
         file_data.append('service', 'mentors');
     
         const fileResponse = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/file-upload/upload`, file_data, {
@@ -146,15 +149,8 @@ function EditLesson() {
     
         console.log('File upload API response:', fileResponse.data.data);
     
-        form_data.append('cover_image', fileResponse.data.data[0].name);
+        form_data.append('video_url', fileResponse.data.data[0].name);
       }
-      
-
-      // if (formik.values.phone_number !== initialValues.phone_number) {
-      //   form_data.append('phone_number', formik.values.phone_number);
-      // }
-     
-
   
       const token = localStorage.getItem("token");
       const response = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/admin/edit-lesson/${id}`, form_data, {
@@ -167,19 +163,25 @@ function EditLesson() {
       if (response.status === 200) {
         formik.resetForm();
         // setModalMessage('Mentor updated successfully!');
-        // setShowSuccessModal(true);
-        history.push('/app/admin/lessons')
+        setShowSuccessModal(true);
+        // history.push('/app/admin/lessons')
       }
     } catch (error) {
       console.error('API error:', error);
     }
   };
 
-  const handleFileChange = (e) => {
-    formik.setFieldValue('cover_image', e.target.files[0]);
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    history.push('/app/admin/lessons'); // Redirect after closing the modal
   };
 
-  const fileName = localStorage.getItem('cover_image')
+  const handleFileChange = (e) => {
+    formik.setFieldValue('video_url', e.target.files[0]);
+  };
+
+  const fileName = localStorage.getItem('video_url')
 
 
   const formik = useFormik({
@@ -201,31 +203,31 @@ function EditLesson() {
       setlessonError(''); 
     }
   };
-
+   
 
 
 
   return (
     <>
-      <PageTitle>lesson Edit form</PageTitle>
+      <PageTitle>Lesson Edit form</PageTitle>
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
         <form onSubmit={formik.onSubmit}>
           {/* Name */}
           <div className="mb-4">
             <Label>
-              <span>lesson Title</span>
+              <span>Lesson Title</span>
               <Input
                 className="mt-1"
                 placeholder=""
-                name="lesson"
-                value={formik.values.lesson}
+                name="title"
+                value={formik.values.title}
                 onChange={handlelessonNameChange}
                 
               />
             </Label>
-            {formik.touched.lesson && formik.errors.lesson ? (
-              <div className="text-red-600">{formik.errors.lesson}</div>
+            {formik.touched.title && formik.errors.title ? (
+              <div className="text-red-600">{formik.errors.title}</div>
             ) : null}
             {lessonError && <div className="text-red-600">{lessonError}</div>}
           
@@ -233,30 +235,12 @@ function EditLesson() {
 
           {/* Description */}
           <div className="mb-4">
-            <Label>
-              <span>Description</span>
-              <Textarea
-                className="mt-1"
-                rows="3"
-                placeholder="Enter a description."
-                name="description"
-                value={formik.values.description}
-                onChange={formik.handleChange}
-               
-              />
-            </Label>
-            {formik.touched.description && formik.errors.description ? (
-              <div className="text-red-600">{formik.errors.description}</div>
-            ) : null}
-          
-          </div>
-          <div className="mb-4">
-            <Label>
+          <Label>
             <span>Instructor</span>
             <select
                 className="mt-1 block w-35 h-10 rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
                 name="instructor" 
-                value={formik.values.instructor}
+                value={formik.values.mentor_id}
                 onChange={formik.handleChange}
               >
                 
@@ -280,10 +264,11 @@ function EditLesson() {
                 
               </select>
             </Label>
-            {formik.touched.instructor && formik.errors.instructor ? (
-              <div className="text-red-600">{formik.errors.instructor}</div>
+            {formik.touched.mentor_id && formik.errors.mentor_id ? (
+              <div className="text-red-600">{formik.errors.mentor_id}</div>
             ) : null}
           </div>
+
 
           <div className="mb-4">
             <Label>
@@ -308,7 +293,7 @@ function EditLesson() {
                        value={course._id}
                        // style={{ height: '50px' ,width:"50px"}}
                      >
-                       {course.title}
+                       {course.course}
                      </option>
                    ))
                  }
@@ -323,15 +308,15 @@ function EditLesson() {
           {/* File Upload */}
           <div className="mb-4 relative">
             <Label>
-              <span className="text-gray-700 dark:text-gray-400">Cover Image Upload</span>
+              <span className="text-gray-700 dark:text-gray-400">Video Url Upload</span>
               <div
                 className="mt-1 w-full rounded-md shadow-sm focus-within:border-purple-400 focus-within:ring focus-within:ring-purple-200 focus-within:ring-opacity-50 cursor-pointer"
               >
                 <input
                   type="file"
                   className="hidden"
-                  accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
-                  name="cover_image"
+                  accept=".mp4"
+                  name="video_url"
                   onChange={handleFileChange}
                 />
                 <div className="py-2 px-4 text-gray-500">
@@ -339,13 +324,13 @@ function EditLesson() {
                     Choose file
                   </span>
                   <span> </span>
-                  {formik.values.cover_image ? formik.values.cover_image.name : (fileName === "undefined" ? 'No file selected' : fileName)}
+                  {formik.values.video_url ? formik.values.video_url.name : (fileName === "undefined" ? 'No file selected' : fileName)}
 
                 </div>
               </div>
             </Label>
-            {formik.touched.cover_image && formik.errors.cover_image ? (
-              <div className="text-red-600">{formik.errors.cover_image}</div>
+            {formik.touched.video_url && formik.errors.video_url ? (
+              <div className="text-red-600">{formik.errors.video_url}</div>
             ) : null}
           </div>
 
@@ -354,13 +339,13 @@ function EditLesson() {
             <Button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              disabled={formik.isSubmitting || lessonError}
+              disabled={formik.isSubmitting || !formik.dirty  || lessonError}
               onClick={ handleSubmit }
             >
               Submit
             </Button>
           </div>
-          {/* <Modals isOpen={showSuccessModal} onClose={closeSuccessModal} message={modalMessage} /> */}
+          <Modals isOpen={showSuccessModal} onClose={handleCloseModal} message="Lesson updated successfully!" />
         </form>
       </div>
     </>

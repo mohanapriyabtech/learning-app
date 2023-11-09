@@ -31,7 +31,7 @@ const routes = [
     {
       path: '/app/admin/lessons',
       icon: 'TablesIcon',
-      name: 'Lesson',
+      name: 'Lessons',
     },
     {
       path: '/app/admin/mentors',

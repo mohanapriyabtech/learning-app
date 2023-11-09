@@ -18,7 +18,7 @@ class ListLessonController {
     async list(req, res) {
 
         try {
-            const result = await Lesson.find()
+            const result = await Lesson.find().populate('mentor_id').populate('course_id').sort({created_at:-1}).exec()
             if (result.length != 0) {
                 return responseHandler.successResponse(res, result, "Lesson list retrived successfull", 200);
             } else {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
  
@@ -35,7 +35,9 @@ function Tables() {
   const [page, setPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const [focusRowIndex, setFocusRowIndex] = useState(null); // Track the index to focus on
+  const focusRowRef = useRef(null);
+  
 
 
 
@@ -48,7 +50,7 @@ function Tables() {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      const response = await axios.get(`${apiUrl}/api/v1/admin/list-lessons`, { headers });
+      const response = await axios.get(`${apiUrl}/api/v1/admin/list-lesson`, { headers });
       setDataTable(response.data.data);
       setTotalResults(response.data.data.length);
     } catch (error) {
@@ -77,7 +79,7 @@ function Tables() {
         Authorization: `Bearer ${token}`,
       };
       const response = await axios.get(
-        `${apiUrl}/api/v1/admin/search-lessons?lessons=${searchQuery}`,
+        `${apiUrl}/api/v1/admin/search-lesson?lesson=${searchQuery}`,
         { headers }
       );
       console.log(response.status,)
@@ -96,8 +98,8 @@ function Tables() {
     setPage(page);
   };
 
-  const handleCreateProjectClick = () => {
-    history.push('/app/admin/create-lessons');
+  const handleLessonProjectClick = () => {
+    history.push('/app/admin/create-lesson');
   };
 
 
@@ -108,11 +110,15 @@ function Tables() {
         Authorization: `Bearer ${token}`,
       };
 
-      await axios.delete(`${apiUrl}/api/v1/admin/delete-lessons/${projectId}`, { headers });
+      await axios.delete(`${apiUrl}/api/v1/admin/delete-lesson/${projectId}`, { headers });
 
       setDataTable(dataTable.filter(project => project.id !== projectId));
       setTotalResults(totalResults - 1);
       fetchData()
+      // If the deleted row was the focused row, remove focus
+      if (focusRowIndex === projectId) {
+        setFocusRowIndex(null);
+      }
 
     } catch (error) {
       console.error('Error deleting project:', error);
@@ -129,7 +135,7 @@ function Tables() {
       const newStatus = project.status === 1 ? 0 : 1; // Toggle status between 0 and 1
   
       const response = await axios.patch(
-        `${process.env.REACT_APP_API_URL}/api/v1/admin/edit-lessons/${project._id}`,
+        `${process.env.REACT_APP_API_URL}/api/v1/admin/edit-lesson/${project._id}`,
         { status: newStatus },
         { headers }
       );
@@ -151,16 +157,29 @@ function Tables() {
   
 
 
-  const handleEditClick = async (project) => {
+  const handleEditClick = async (project,index) => {
+    console.log(project,"edit")
+    localStorage.setItem("title", project.title);
+    localStorage.setItem("lessonsMentor", project.mentor_id._id);
+    localStorage.setItem("lessonsCourse", project.course_id._id);
+    localStorage.setItem("video_url", project.video_url);
+    localStorage.setItem("github_url", project.github_url);
+    // localStorage.setItem("category_id_lessons", project.category_id._id);
 
-    localStorage.setItem("description", project.description);
-    localStorage.setItem("instructor", project.instructor);
-    localStorage.setItem("lessons", project.lessons);
-    localStorage.setItem("cover_image", project.cover_image);
-    localStorage.setItem("category_id_lessons", project.category_id._id);
-
-    history.push(`/app/admin/edit-lessons/${project._id}`)
+    // Set the index of the edited row to focus on
+    setFocusRowIndex(index);
+    history.push(`/app/admin/edit-lesson/${project._id}`)
   };
+
+
+
+  // Use the focusRowIndex to determine whether to apply focus
+  useEffect(() => {
+    if (focusRowIndex !== null && focusRowRef.current) {
+      // Use ref to focus on the specific row
+      focusRowRef.current.focus();
+    }
+  }, [focusRowIndex]);
   
 
 
@@ -177,7 +196,7 @@ function Tables() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <Button onClick={handleCreateProjectClick}>
+        <Button onClick={handleLessonProjectClick}>
           Create lessons
           <span className="ml-2" aria-hidden="true">
             +
@@ -191,7 +210,8 @@ function Tables() {
           <TableHeader>
             <tr>
               <TableCell>lessons</TableCell>
-              <TableCell>Category</TableCell>
+              <TableCell>Course</TableCell>
+              <TableCell>Mentor</TableCell>
               <TableCell>Status</TableCell>
               <TableCell></TableCell>
               <TableCell>Date</TableCell>
@@ -208,18 +228,21 @@ function Tables() {
             <TableBody>
 
               {dataTable.map((project, i) => (
-                <TableRow key={i}>
+                <TableRow key={i}  ref={focusRowIndex === i ? focusRowRef : null} tabIndex={0} >
                   <TableCell>
                     <div className="flex items-center text-sm">
                       {/* <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User avatar" /> */}
                       <div>
-                        <p className="font-semibold">{project.lessons}</p>
+                        <p className="font-semibold">{project.title}</p>
 
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{project.category_id.category_name}</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{project.course_id.course}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">{project.mentor_id.mentor_name}</p>
                   </TableCell>
 
                   <TableCell>

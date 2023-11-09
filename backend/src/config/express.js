@@ -48,7 +48,7 @@ export default class Express {
             createParentPath: true,
         }));
         this.app.use(limiter)
-        this.app.set('trust proxy', true); //for deployment purpose
+        // this.app.set('trust proxy', true); //for deployment purpose
         // error handling middleware
         // this.app.use(function (err, req, res, next) {
             // if (err.message === 'Not allowed by CORS') {

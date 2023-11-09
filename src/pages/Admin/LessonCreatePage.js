@@ -128,13 +128,13 @@ function Forms() {
 
   return (
     <>
-      <PageTitle>lesson Create form</PageTitle>
+      <PageTitle>Lesson Create form</PageTitle>
 
       <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800" style={{ width: '50%' }}>
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
             <Label>
-              <span>lesson Name</span>
+              <span>Lesson Name</span>
               <Input
                 className="mt-1"
                 placeholder="lesson name"

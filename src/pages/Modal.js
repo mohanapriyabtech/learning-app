@@ -1,33 +1,45 @@
 import React from 'react';
-import { XIcon } from '@heroicons/react/outline';
 
-function Modal({ isOpen, onClose, message }) {
+function TailwindModal({ isOpen, onClose, message }) {
   return (
-    <>
-      {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          {/* Backdrop */}
-          <div className="fixed inset-0 bg-black opacity-50"></div>
+    // Modal backdrop
+    <div
+      className={`${
+        isOpen ? 'fixed inset-0 bg-black opacity-50' : 'hidden'
+      } transition-opacity duration-300`}
+      onClick={onClose}
+    >
+      {/* Modal container */}
+      <div
+        className={`${
+          isOpen ? 'fixed inset-1/2 transform -translate-y-1/2 translate-x-1/2 bg-white p-8 rounded-md' : 'hidden'
+        } transition-transform duration-300`}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-0 right-0 mt-2 mr-2 text-gray-500 hover:text-gray-600 focus:outline-none"
+        >
+          &times;
+        </button>
 
-          {/* Modal Container */}
-          <div className="fixed inset-0 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-md w-96">
-              {/* Close button */}
-              <button
-                onClick={onClose}
-                className="absolute top-2 right-2 text-gray-500 hover:text-gray-600 focus:outline-none"
-              >
-                <XIcon className="h-6 w-6" />
-              </button>
-
-              {/* Modal Content */}
-              <p>{message}</p>
-            </div>
-          </div>
+        {/* Modal content */}
+        <div>
+          <p>{message || 'Lorem ipsum dolor sit amet consectetur adipisicing elit.'}</p>
         </div>
-      )}
-    </>
+
+        {/* Modal actions */}
+        <div className="mt-4 text-right">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+          >
+            Ok
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
-export default Modal;
+export default TailwindModal;

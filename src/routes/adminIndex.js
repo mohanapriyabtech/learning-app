@@ -3,6 +3,7 @@ import EditCourse from '../pages/Mentor/CourseEditForm'
 
 
 
+
 // use lazy for better code splitting, a.k.a. load faster
 const Dashboard = lazy(() => import('../pages/Dashboard'))
 const Forms = lazy(() => import('../pages/Forms'))
@@ -13,6 +14,7 @@ const Buttons = lazy(() => import('../pages/Buttons'))
 const Modals = lazy(() => import('../pages/Modals'))
 const Courses = lazy(() => import('../pages/Admin/AdminCourses'))
 const Mentors = lazy(()  => import('../pages/Admin/MentorsList'))
+const Lessons = lazy(()  => import('../pages/Admin/AdminLessonListPage'))
 const MentorsCreateForm = lazy(()  => import('../pages/Admin/MentorCreateForm'))
 const MentorsEditForm = lazy(() => import('../pages/Admin/MentorEditForm'))
 const AdminCourseEdit = lazy(() => import('../pages/Admin/CourseEditForm'))
@@ -96,6 +98,11 @@ const routes = [
     path: '/mentors',
     component: Mentors,
   },
+  {
+    path: '/lessons',
+    component: Lessons,
+  },
+
   {
     path: '/mentors-create-form',
     component: MentorsCreateForm,

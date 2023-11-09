@@ -111,7 +111,9 @@ function EditCourse() {
         console.error('Error fetching category data:', error);
       });
   }, []);
+  
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleSubmit = async (e) => { 
     e.preventDefault();
@@ -148,14 +150,7 @@ function EditCourse() {
     
         form_data.append('cover_image', fileResponse.data.data[0].name);
       }
-      
-
-      // if (formik.values.phone_number !== initialValues.phone_number) {
-      //   form_data.append('phone_number', formik.values.phone_number);
-      // }
-     
-
-  
+    
       const token = localStorage.getItem("token");
       const response = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/admin/edit-course/${id}`, form_data, {
         headers: {
@@ -167,12 +162,16 @@ function EditCourse() {
       if (response.status === 200) {
         formik.resetForm();
         // setModalMessage('Mentor updated successfully!');
-        // setShowSuccessModal(true);
-        history.push('/app/admin/courses')
+        setShowSuccessModal(true);
       }
     } catch (error) {
       console.error('API error:', error);
     }
+  };
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    history.push('/app/admin/courses'); // Redirect after closing the modal
   };
 
   const handleFileChange = (e) => {
@@ -354,13 +353,13 @@ function EditCourse() {
             <Button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              disabled={formik.isSubmitting || courseError}
+              disabled={formik.isSubmitting|| !formik.dirty  || courseError}
               onClick={ handleSubmit }
             >
               Submit
             </Button>
           </div>
-          {/* <Modals isOpen={showSuccessModal} onClose={closeSuccessModal} message={modalMessage} /> */}
+          <Modals isOpen={showSuccessModal} onClose={handleCloseModal} message="Course updated successfully!" />
         </form>
       </div>
     </>

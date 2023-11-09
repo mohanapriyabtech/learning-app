@@ -6,6 +6,7 @@ import { Select } from '@windmill/react-ui';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Modals from '../Modals';
  
  require('dotenv').config();
 
@@ -29,7 +30,7 @@ function Editcategory() {
   };
 
   
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   
   const handleSubmit = async (e) => { 
     e.preventDefault();
@@ -55,11 +56,16 @@ function Editcategory() {
  
       if (response.status === 200) {
         formik.resetForm();
-        history.push('/app/admin/categories')
+        setShowSuccessModal(true);
       }
     } catch (error) {
       console.error('API error:', error);
     }
+  };
+
+  const handleCloseModal = () => {
+    setShowSuccessModal(false);
+    history.push('/app/admin/categories'); // Redirect after closing the modal
   };
 
 
@@ -116,13 +122,13 @@ function Editcategory() {
             <Button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              disabled={formik.isSubmitting || categoryNameError}
+              disabled={formik.isSubmitting|| !formik.dirty  || categoryNameError}
               onClick={handleSubmit}
             >
               Submit
             </Button>
           </div>
-          {/* <Modals isOpen={showSuccessModal} onClose={closeSuccessModal} message={modalMessage} /> */}
+          <Modals isOpen={showSuccessModal} onClose={handleCloseModal} message="Category updated successfully!" />
         </form>
       </div>
     </>
