@@ -156,6 +156,8 @@ function Tables() {
   };
   
 
+  // Add a new ref for focusing
+  const focusRowIndexRef = useRef(null);
 
   const handleEditClick = async (project,index) => {
     console.log(project,"edit")
@@ -165,21 +167,25 @@ function Tables() {
     localStorage.setItem("video_url", project.video_url);
     localStorage.setItem("github_url", project.github_url);
     // localStorage.setItem("category_id_lessons", project.category_id._id);
-
+    console.log(index,"indexxxx")
     // Set the index of the edited row to focus on
     setFocusRowIndex(index);
+    focusRowIndexRef.current = index; 
+    console.log( focusRowIndexRef.current,"updated")
     history.push(`/app/admin/edit-lesson/${project._id}`)
   };
 
-
-
-  // Use the focusRowIndex to determine whether to apply focus
   useEffect(() => {
-    if (focusRowIndex !== null && focusRowRef.current) {
-      // Use ref to focus on the specific row
-      focusRowRef.current.focus();
-    }
+    console.log(focusRowIndex, "focus ROW");
   }, [focusRowIndex]);
+
+  useEffect(() => {
+    if (focusRowIndexRef.current !== null && focusRowIndexRef.current) {
+      // Use ref to focus on the specific row
+      focusRowIndexRef.current.focus();
+      console.log(focusRowIndexRef.current, "updated");
+    }
+  }, [dataTable]);
   
 
 
@@ -228,7 +234,7 @@ function Tables() {
             <TableBody>
 
               {dataTable.map((project, i) => (
-                <TableRow key={i}  ref={focusRowIndex === i ? focusRowRef : null} tabIndex={0} >
+               <TableRow key={i} ref={focusRowIndex === i ? focusRowIndexRef : null} tabIndex={0}>
                   <TableCell>
                     <div className="flex items-center text-sm">
                       {/* <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User avatar" /> */}
@@ -282,7 +288,7 @@ function Tables() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-4">
-                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => handleEditClick(project)}>
+                      <Button layout="link" size="icon" aria-label="Edit" onClick={() => handleEditClick(project,i)}>
                         {/* <EditProject project={project._id} /> */}
                         <EditIcon className="w-5 h-5" aria-hidden="true" />
                       </Button>
