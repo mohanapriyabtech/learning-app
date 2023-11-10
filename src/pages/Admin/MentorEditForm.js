@@ -246,12 +246,12 @@ function EditProject() {
           {/* File Upload */}
           <div className="mb-4 relative">
             <Label>
-              <span className="text-gray-700 dark:text-gray-400">Document Upload</span>
+              <span className="text-gray-700 dark:text-gray-400">Profile Image Upload</span>
               {/* Hidden file input */}
               <input
                 type="file"
                 className="hidden"
-                accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
+                accept=".jpg, .jpeg, .png"
                 name="file"
                 onChange={handleFileChange}
               // disabled={formik.isSubmitting}

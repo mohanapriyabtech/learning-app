@@ -162,6 +162,7 @@ function Tables() {
   const handleEditClick = async (project,index) => {
     console.log(project,"edit")
     localStorage.setItem("title", project.title);
+    localStorage.setItem("lesson_description", project.description);
     localStorage.setItem("lessonsMentor", project.mentor_id._id);
     localStorage.setItem("lessonsCourse", project.course_id._id);
     localStorage.setItem("video_url", project.video_url);

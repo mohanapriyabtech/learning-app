@@ -19,7 +19,7 @@ const validationSchema = Yup.object().shape({
     
   instructor: Yup.string().required('Instructor is required'),
   category_id: Yup.string().required('Category is required'),
-  cover_image: Yup.string()
+  profile_image: Yup.string()
 });
 
 
@@ -33,7 +33,7 @@ function Forms() {
     description: '',
     course: '',
     category_id: '',
-    cover_image: null,
+    profile_image: null,
   });
 
 
@@ -74,7 +74,7 @@ function Forms() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    formik.setFieldValue('cover_image', file);
+    formik.setFieldValue('profile_image', file);
   };
 
 
@@ -88,7 +88,7 @@ function Forms() {
       form_data.append('instructor', formik.values.instructor);
       form_data.append('category_id', formik.values.category_id);
       const file_data = new FormData();
-      file_data.append('media', formik.values.cover_image);
+      file_data.append('media', formik.values.profile_image);
       file_data.append('service', 'courses');
 
       const fileResponse = await axios.post(`${apiUrl}/api/v1/file-upload/upload`, file_data, {
@@ -99,8 +99,8 @@ function Forms() {
 
       console.log('File upload API response:', fileResponse.data.data);
 
-      form_data.append('cover_image', fileResponse.data.data[0].name);
-      // form_data.append('cover_image_url', fileResponse.data.data[0].url);
+      form_data.append('profile_image', fileResponse.data.data[0].name);
+      // form_data.append('profile_image_url', fileResponse.data.data[0].url);
 
       const token = localStorage.getItem("token");
       const response = await axios.post(`${apiUrl}/api/v1/admin/create-course`, form_data, {
@@ -238,7 +238,7 @@ function Forms() {
                 type="file"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
                 accept=".png, .jpeg, .jpg, .svg, .gif"
-                name="cover_image"
+                name="profile_image"
                 // onChange={(e) => {
                 //   console.log(e, "e");
                 //   formik.setFieldValue('file', e.currentTarget.files[0]);
@@ -248,8 +248,8 @@ function Forms() {
 
               />
             </Label>
-            {formik.touched.cover_image && formik.errors.cover_image ? (
-              <div className="text-red-600">{formik.errors.cover_image}</div>
+            {formik.touched.profile_image && formik.errors.profile_image ? (
+              <div className="text-red-600">{formik.errors.profile_image}</div>
             ) : null}
           </div>
 

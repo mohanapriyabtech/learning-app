@@ -14,12 +14,12 @@ import * as Yup from 'yup';
 const validationSchema = Yup.object().shape({
   description: Yup.string().trim()
     .required('Description is required'),
-  lesson: Yup.string().trim()
+  title: Yup.string().trim()
     .required('lesson is required'),
     
-  instructor: Yup.string().required('Instructor is required'),
-  category_id: Yup.string().required('Category is required'),
-  cover_image: Yup.string()
+  mentor_id: Yup.string().required('Instructor is required'),
+  course_id: Yup.string().required('Course is required'),
+  video_url: Yup.string()
 });
 
 
@@ -31,9 +31,10 @@ function Forms() {
   const [category, setCategory] = useState([]);
   const [formData, setFormData] = useState({
     description: '',
-    lesson: '',
-    category_id: '',
-    cover_image: null,
+    title: '',
+    mentor_id: '',
+    course_id: '',
+    video_url: null,
   });
 
 
@@ -58,7 +59,7 @@ function Forms() {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/list-category`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/admin/list-course`);
         const categoryData = response.data.data;
         setCategory(categoryData);
 
@@ -74,7 +75,7 @@ function Forms() {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    formik.setFieldValue('cover_image', file);
+    formik.setFieldValue('video_url', file);
   };
 
 
@@ -84,11 +85,12 @@ function Forms() {
       const form_data = new FormData();
 
       form_data.append('description', formik.values.description);
-      form_data.append('lesson', formik.values.lesson);
-      form_data.append('instructor', formik.values.instructor);
-      form_data.append('category_id', formik.values.category_id);
+      form_data.append('title', formik.values.title);
+      form_data.append('mentor_id', formik.values.mentor_id);
+      form_data.append('course_id', formik.values.course_id);
+
       const file_data = new FormData();
-      file_data.append('media', formik.values.cover_image);
+      file_data.append('media', formik.values.video_url);
       file_data.append('service', 'lessons');
 
       const fileResponse = await axios.post(`${apiUrl}/api/v1/file-upload/upload`, file_data, {
@@ -99,7 +101,7 @@ function Forms() {
 
       console.log('File upload API response:', fileResponse.data.data);
 
-      form_data.append('cover_image', fileResponse.data.data[0].name);
+      form_data.append('video_url', fileResponse.data.data[0].name);
       // form_data.append('cover_image_url', fileResponse.data.data[0].url);
 
       const token = localStorage.getItem("token");
@@ -138,14 +140,14 @@ function Forms() {
               <Input
                 className="mt-1"
                 placeholder="lesson name"
-                name="lesson"
-                value={formik.values.lesson}
+                name="title"
+                value={formik.values.title}
                 onChange={formik.handleChange}
               // style={{width:"50%"}}
               />
             </Label>
-            {formik.touched.lesson && formik.errors.lesson ? (
-              <div className="text-red-600">{formik.errors.lesson}</div>
+            {formik.touched.title && formik.errors.title ? (
+              <div className="text-red-600">{formik.errors.title}</div>
             ) : null}
           </div>
 
@@ -170,8 +172,8 @@ function Forms() {
               <span>Instructor</span>
               <select
                 className="mt-1 block w-35 h-10 rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
-                name="instructor"
-                value={formik.values.instructor}
+                name="mentor_id"
+                value={formik.values.mentor_id}
                 onChange={formik.handleChange}
               >
 
@@ -185,33 +187,33 @@ function Forms() {
 
               </select>
             </Label>
-            {formik.touched.instructor && formik.errors.instructor ? (
-              <div className="text-red-600">{formik.errors.instructor}</div>
+            {formik.touched.mentor_id && formik.errors.mentor_id ? (
+              <div className="text-red-600">{formik.errors.mentor_id}</div>
             ) : null}
           </div>
 
           <div className="mb-4">
             <Label>
-              <span>Category</span>
+              <span>Course</span>
               <select
                 className="mt-1 block w-35 h-10 rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
-                name="category_id"
-                value={formik.values.category_id}
+                name="course_id"
+                value={formik.values.course_id}
                 onChange={formik.handleChange}
               >
 
-                <option value="">Select a Category</option>
+                <option value="">Select a Course</option>
 
                 {category.map((category) => (
                   <option key={category._id} value={category._id} style={{ height: '50px' }} >
-                    {category.category_name}
+                    {category.course}
                   </option>
                 ))}
 
               </select>
             </Label>
-            {formik.touched.category_id && formik.errors.category_id ? (
-              <div className="text-red-600">{formik.errors.category_id}</div>
+            {formik.touched.course_id && formik.errors.course_id ? (
+              <div className="text-red-600">{formik.errors.course_id}</div>
             ) : null}
           </div>
           {/* <div className="mb-4">
@@ -233,12 +235,12 @@ function Forms() {
 
           <div className="mb-4">
             <Label>
-              <span className="text-gray-700 dark:text-gray-400">Profile Image Upload</span>
+              <span className="text-gray-700 dark:text-gray-400">Video Url Upload</span>
               <input
                 type="file"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-400 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
-                accept=".png, .jpeg, .jpg, .svg, .gif"
-                name="cover_image"
+                accept=".mp4"
+                name="video_url"
                 // onChange={(e) => {
                 //   console.log(e, "e");
                 //   formik.setFieldValue('file', e.currentTarget.files[0]);
@@ -248,8 +250,8 @@ function Forms() {
 
               />
             </Label>
-            {formik.touched.cover_image && formik.errors.cover_image ? (
-              <div className="text-red-600">{formik.errors.cover_image}</div>
+            {formik.touched.video_url && formik.errors.video_url ? (
+              <div className="text-red-600">{formik.errors.video_url}</div>
             ) : null}
           </div>
 

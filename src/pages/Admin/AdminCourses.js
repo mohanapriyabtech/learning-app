@@ -156,7 +156,7 @@ function Tables() {
     localStorage.setItem("description", project.description);
     localStorage.setItem("instructor", project.instructor);
     localStorage.setItem("course", project.course);
-    localStorage.setItem("cover_image", project.cover_image);
+    localStorage.setItem("course_profile_image", project.profile_image);
     localStorage.setItem("category_id_course", project.category_id._id);
 
     history.push(`/app/admin/edit-course/${project._id}`)

@@ -12,8 +12,9 @@ import Modals from '../../pages/Modals';
 
 
 const validationSchema = Yup.object().shape({
-  lesson: Yup.string().trim().required('lesson is required'),
-  instructor: Yup.string().trim(),
+  title: Yup.string().trim().required('lesson is required'),
+  description: Yup.string().trim(),
+  mentor_id: Yup.string().trim(),
   video_url: Yup.string(),
   description: Yup.string(),
   course_id: Yup.string(),
@@ -30,6 +31,7 @@ function EditLesson() {
   const initialValues = {
   
     mentor_id: localStorage.getItem('lessonsMentor') || '',
+    description: localStorage.getItem('lesson_description') || '',
     title: localStorage.getItem('title') || '',
     course_id: localStorage.getItem('lessonsCourse') || '',
     video_url: null,
@@ -132,6 +134,9 @@ function EditLesson() {
       if (formik.values.course_id !== initialValues.course_id) {
         form_data.append('course_id', formik.values.course_id);
       }
+      if (formik.values.description !== initialValues.description) {
+        form_data.append('description', formik.values.description);
+      }
     
       // form_data.append('file', formData.file); 
 
@@ -233,8 +238,25 @@ function EditLesson() {
             {lessonError && <div className="text-red-600">{lessonError}</div>}
           
           </div>
-
-          {/* Description */}
+          <div className="mb-4">
+            <Label>
+              <span>Description</span>
+              <Input
+                className="mt-1"
+                placeholder=""
+                name="description"
+                value={formik.values.description}
+                onChange={handlelessonNameChange}
+                
+              />
+            </Label>
+            {formik.touched.description && formik.errors.description ? (
+              <div className="text-red-600">{formik.errors.description}</div>
+            ) : null}
+            {lessonError && <div className="text-red-600">{lessonError}</div>}
+          
+          </div>
+        
           <div className="mb-4">
           <Label>
             <span>Instructor</span>

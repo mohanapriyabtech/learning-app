@@ -14,7 +14,7 @@ import Modals from '../../pages/Modals';
 const validationSchema = Yup.object().shape({
   course: Yup.string().trim().required('course is required'),
   instructor: Yup.string().trim(),
-  cover_image: Yup.string(),
+  profile_image: Yup.string(),
   description: Yup.string(),
   category_id: Yup.string(),
 });
@@ -32,7 +32,7 @@ function EditCourse() {
     instructor: localStorage.getItem('instructor') || '',
     course: localStorage.getItem('course') || '',
     category_id: localStorage.getItem('category_id_course') || '',
-    cover_image: null,
+    profile_image: null,
   };
 
   const [instructors, setInstructors] = useState([]);
@@ -134,10 +134,10 @@ function EditCourse() {
     
       // form_data.append('file', formData.file); 
 
-      if (formik.values.cover_image) {
+      if (formik.values.profile_image) {
 
         const file_data = new FormData();
-        file_data.append('media', formik.values.cover_image);
+        file_data.append('media', formik.values.profile_image);
         file_data.append('service', 'mentors');
     
         const fileResponse = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/file-upload/upload`, file_data, {
@@ -148,7 +148,7 @@ function EditCourse() {
     
         console.log('File upload API response:', fileResponse.data.data);
     
-        form_data.append('cover_image', fileResponse.data.data[0].name);
+        form_data.append('profile_image', fileResponse.data.data[0].name);
       }
     
       const token = localStorage.getItem("token");
@@ -175,10 +175,10 @@ function EditCourse() {
   };
 
   const handleFileChange = (e) => {
-    formik.setFieldValue('cover_image', e.target.files[0]);
+    formik.setFieldValue('profile_image', e.target.files[0]);
   };
 
-  const fileName = localStorage.getItem('cover_image')
+  const fileName = localStorage.getItem('course_profile_image')
 
 
   const formik = useFormik({
@@ -329,22 +329,22 @@ function EditCourse() {
                 <input
                   type="file"
                   className="hidden"
-                  accept=".pdf, .doc, .docx, .jpg, .jpeg, .png"
-                  name="cover_image"
+                  accept=".jpg, .jpeg, .png"
+                  name="profile_image"
                   onChange={handleFileChange}
                 />
                 <div className="py-2 px-4 text-gray-500">
                   <span className="text-purple-600 border border-gray-300 rounded-md pl-2 pr-4">
                     Choose file
                   </span>
-                  <span> </span>
-                  {formik.values.cover_image ? formik.values.cover_image.name : (fileName === "undefined" ? 'No file selected' : fileName)}
-
+                  <span>
+                  {formik.values.profile_image ? formik.values.profile_image.name : (fileName === "undefined" ? 'No file selected' : fileName)}
+                  </span>
                 </div>
               </div>
             </Label>
-            {formik.touched.cover_image && formik.errors.cover_image ? (
-              <div className="text-red-600">{formik.errors.cover_image}</div>
+            {formik.touched.profile_image && formik.errors.profile_image ? (
+              <div className="text-red-600">{formik.errors.profile_image}</div>
             ) : null}
           </div>
 

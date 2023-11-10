@@ -47,7 +47,7 @@ export default class Express {
         this.app.use(fileUpload({
             createParentPath: true,
         }));
-        this.app.use(limiter)
+        // this.app.use(limiter)
         this.app.set('trust proxy', false); //for deployment purpose
         // error handling middleware
         // this.app.use(function (err, req, res, next) {
