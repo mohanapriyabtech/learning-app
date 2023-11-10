@@ -1,5 +1,5 @@
 
-import { decrypt } from "../../../../../utils/encrypt";
+import { decrypt, encrypt } from "../../../../../utils/encrypt";
 import { responseHandler } from "../../../../../utils/response-handler";
 import { Mentor} from "../../../mentor/models/mentor-model";
 import { v4 as uuidv4 } from 'uuid';
